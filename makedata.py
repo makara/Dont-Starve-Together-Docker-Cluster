@@ -8,8 +8,8 @@ service_format = '''
  {name}:
     image: thoxvi/dont-starve-together-docker-cluster:latest
     ports:
-      - "10999/udp"
-      - "10998/udp"
+      - 10999:10999/udp
+      - 10998:10998/udp
     volumes:
       - "{ini_path}:/root/.klei/DoNotStarveTogether/Cluster_1"
       - "{mods_setup_path}:/root/DST/mods/dedicated_server_mods_setup.lua"
@@ -21,7 +21,7 @@ services:'''
 
 cluster_ini = '''[GAMEPLAY]
 game_mode = survival
-max_players = 8
+max_players = 15
 pvp = false
 pause_when_empty = true
 

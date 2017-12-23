@@ -1,3 +1,14 @@
 --加载Mod在这里，按照官方的格式如
 --ServerModSetup("350811795")
 --记得加入对应的modoverrides.lua配置信息到./Master和./Caves里
+ServerModSetup("1207269058")
+ServerModSetup("367546858")
+ServerModSetup("375850593")
+ServerModSetup("378160973")
+ServerModSetup("458940297")
+ServerModSetup("462434129")
+ServerModSetup("462469447")
+ServerModSetup("501385076")
+ServerModSetup("572538624")
+ServerModSetup("609675532")
+ServerModSetup("623749604")
