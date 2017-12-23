@@ -43,7 +43,17 @@ local pofilename = "DST_"..langname[1]..".po"
 --判断游戏分支部分
 LoadPOFile(pofilename, langname[1])
 print(langname[2])
-
+Assets = {
+	Asset("IMAGE", "images/customisation.tex"),
+	Asset("ATLAS", "images/customisation.xml"),
+	Asset("IMAGE", "images/skinsscreen.tex"),
+	Asset("ATLAS", "images/skinsscreen.xml"),
+	Asset("IMAGE", "images/tradescreen.tex"),
+	Asset("ATLAS", "images/tradescreen.xml"),
+	Asset("IMAGE", "images/tradescreen_overflow.tex"),
+	Asset("ATLAS", "images/tradescreen_overflow.xml"),
+}
+print("加载贴图翻译成功！")
 
 if SMALL_TEXTURES and not ISPLAYINGNOW then
 -- 自动关闭小贴图（By Skull）
@@ -60,6 +70,7 @@ if SMALL_TEXTURES and not ISPLAYINGNOW then
 	end)
 
 end
+
 
 
 --[[

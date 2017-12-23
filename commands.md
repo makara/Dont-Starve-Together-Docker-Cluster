@@ -25,11 +25,11 @@
 
 ## 作弊
 * `c_give("prefab",amount)` -- 获取一定数量预设物品(只适用于可以被储存在物品栏的背包 和物品)
-* `c_sethea​lth(percent)` -- 根据百分比设置生命值 0.90 = 90%
-* `c_setsanit​y(percent)` -- 根据百分比设置理智值 0.90 = 90%
-* `c_sethunger(pe​rcent)` -- 根据百分比设置饥饿值 0.90 = 90%
-* `c_setmoisture(pe​rcent)` -- 根据百分比设置湿度值 0.90 = 90%
-* `c_settemperature(degrees)` -- 根据百分比设置温度值 0.90 = 90%
+* `c_sethealth(1)` -- 根据百分比设置生命值 0.90 = 90%
+* `c_setsanity(1)` -- 根据百分比设置理智值 0.90 = 90%
+* `c_sethunger(1)` -- 根据百分比设置饥饿值 0.90 = 90%
+* `c_setmoisture(1)` -- 根据百分比设置湿度值 0.90 = 90%
+* `c_settemperature(1)` -- 根据百分比设置温度值 0.90 = 90%
 * `c_godmode()` -- 玩家的理智值、饥饿值和被攻击时生命值不再下降
 
 * `c_move(AllPlayers[number])` -- 移动一个玩家到鼠标位置

@@ -3,7 +3,34 @@ return {
     configuration_options={ ddon=true, hbcolor="dynamic", hblength=10, hbpos=1, hbstyle="heart" },
     enabled=true 
   },
+  ["workshop-1234341720"]={
+    configuration_options={
+      battleaxe="normal",
+      book_dogs="normal",
+      book_freeze="normal",
+      book_healing="normal",
+      book_lava="normal",
+      book_light="normal",
+      book_meteor="normal",
+      book_sleepingfield="normal",
+      book_slowness="normal",
+      book_summon="normal",
+      book_tornado="normal",
+      deathscythe="normal",
+      flamesword="normal",
+      halberd="normal",
+      healingstaff="normal",
+      katana="normal",
+      pirate="normal",
+      poseidon="normal",
+      purplesword="normal",
+      skullspear="normal",
+      teleportstaff="normal" 
+    },
+    enabled=true 
+  },
   ["workshop-367546858"]={ configuration_options={ LANG="auto", SMALL_TEXTURES=true }, enabled=true },
+  ["workshop-374550642"]={ configuration_options={ MAXSTACKSIZE=99 }, enabled=true },
   ["workshop-375850593"]={ configuration_options={  }, enabled=true },
   ["workshop-378160973"]={
     configuration_options={
@@ -41,10 +68,10 @@ return {
       MOD_RESTART_ALLOW_RESTART=true,
       MOD_RESTART_ALLOW_RESURRECT=true,
       MOD_RESTART_CD_BONUS=0,
-      MOD_RESTART_CD_KILL=3,
+      MOD_RESTART_CD_KILL=0,
       MOD_RESTART_CD_MAX=0,
-      MOD_RESTART_CD_RESTART=5,
-      MOD_RESTART_CD_RESURRECT=7,
+      MOD_RESTART_CD_RESTART=0,
+      MOD_RESTART_CD_RESURRECT=0,
       MOD_RESTART_FORCE_DROP_MODE=0,
       MOD_RESTART_IGNORING_ADMIN=true,
       MOD_RESTART_MAP_SAVE=2,

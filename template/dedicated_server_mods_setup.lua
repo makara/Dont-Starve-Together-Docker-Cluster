@@ -2,7 +2,9 @@
 --ServerModSetup("350811795")
 --记得加入对应的modoverrides.lua配置信息到./Master和./Caves里
 ServerModSetup("1207269058")
+ServerModSetup("1234341720")
 ServerModSetup("367546858")
+ServerModSetup("374550642")
 ServerModSetup("375850593")
 ServerModSetup("378160973")
 ServerModSetup("458940297")
