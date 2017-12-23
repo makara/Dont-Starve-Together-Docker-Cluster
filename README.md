@@ -54,3 +54,22 @@ docker-compose up
 
 - 如果有任何建议或者 Bug 可以提 issue ，或者可以邮箱联系`A@Thoxvi.com`
 - (｡･ω･｡)ﾉ♡
+## Modes for server
+* [Storeroom]()
+* [Extra Equip Slots]()
+* [Food Values-Item Tooltips(Server and Client)]()
+* [Limit Prefab]()
+* [Map Discovery Sharing]()
+* [Quick Pick]()
+* [Restart]()
+* [Simple Health Bar DST]()
+
+## 生成Cluster
+```shell
+$ python3 makedata.py  //生成cluster配置文件
+$ cd ./data
+$ docker-compose up //启动服务器
+```
+
+## 问题
+- [ ] Mod 加载不成功，再创建的服务器中并没有mod配置
