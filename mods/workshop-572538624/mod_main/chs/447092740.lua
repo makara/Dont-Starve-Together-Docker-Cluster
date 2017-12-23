@@ -1,0 +1,7 @@
+_G.ChinesePlus.RenameAction("WALLJUMP","翻过")
+_G.ChinesePlus.RenameAction("JUMPOVER","跳过")
+_G.ChinesePlus.RenameAction("TREEHIDE","爬树(-5饥饿)")
+_G.ChinesePlus.RenameAction("TAKEREFUGE","避难(-5饥饿)")
+_G.ChinesePlus.RenameAction("PUSH","推开")
+_G.ChinesePlus.RenameAction("SHOVE","猛推")
+_G.ChinesePlus.RenameAction("SEARCH","搜寻(-2精神)")

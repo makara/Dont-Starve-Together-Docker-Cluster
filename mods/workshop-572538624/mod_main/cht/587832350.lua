@@ -1,0 +1,3 @@
+STRINGS.NAMES.CHRISTMAS_TREE = "聖誕樹"
+_G.ChinesePlus.RenameRecipe("CHRISTMAS_TREE", "發光的樹。")
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.CHRISTMAS_TREE = "我和你有這麼多的歡樂，閃閃發光的樹！"

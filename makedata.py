@@ -8,10 +8,11 @@ service_format = '''
  {name}:
     image: thoxvi/dont-starve-together-docker-cluster:latest
     ports:
-      - 10999:10999/udp
-      - 10998:10998/udp
+      - "10999:10999/udp"
+      - "10998:10998/udp"
     volumes:
       - "{ini_path}:/root/.klei/DoNotStarveTogether/Cluster_1"
+      - "{mods_path}:/root/DST/mods"
       - "{mods_setup_path}:/root/DST/mods/dedicated_server_mods_setup.lua"
     container_name: {name}
 '''
@@ -80,8 +81,10 @@ for info in infos:
     intro = info[2]
     passwd = info[3]
     path_data_name = path_data + '/' + name
+    path_mods_name = path_data + '/' + 'mods'
     os.system("cd " + path)
     os.system('cp -rf template ' + path_data_name)
+    os.system('cp -rf mods ' + path_mods_name)
     with open(path_data_name + "/cluster_token.txt", 'w') as f:
         f.write(token)
     with open(path_data_name + "/cluster.ini", 'w') as f:
@@ -95,6 +98,7 @@ for info in infos:
                          service_format.format(
                              name=name,
                              ini_path=path_data_name,
+                             mods_path = path_mods_name,
                              mods_setup_path=path_data_name + "/dedicated_server_mods_setup.lua",
                          )
 
