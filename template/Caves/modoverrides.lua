@@ -137,7 +137,7 @@ return {
   ["workshop-623749604"]={
     configuration_options={
       Craft="Normal",
-      Destroyable="DestroyByAll",
+      Destroyable="DestroyByPlayer",
       FoodSpoilage=1,
       Language="En",
       Position="Center",
