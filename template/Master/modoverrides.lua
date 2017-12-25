@@ -1,7 +1,40 @@
 return {
   ["workshop-1207269058"]={
-    configuration_options={ ddon=true, hbcolor="dynamic", hblength=5, hbpos=1, hbstyle="heart" },
-    enabled=true
+    configuration_options={
+      ddon=true,
+      hbcolor="dynamic",
+      hblength=5,
+      hbpos=1,
+      hbstyle="heart",
+      value=true 
+    },
+    enabled=true 
+  },
+  ["workshop-1234341720"]={
+    configuration_options={
+      battleaxe="normal",
+      book_dogs="normal",
+      book_freeze="normal",
+      book_healing="normal",
+      book_lava="normal",
+      book_light="normal",
+      book_meteor="normal",
+      book_sleepingfield="normal",
+      book_slowness="normal",
+      book_summon="normal",
+      book_tornado="normal",
+      deathscythe="normal",
+      flamesword="normal",
+      halberd="normal",
+      healingstaff="normal",
+      katana="normal",
+      pirate="normal",
+      poseidon="normal",
+      purplesword="normal",
+      skullspear="normal",
+      teleportstaff="normal" 
+    },
+    enabled=true 
   },
   ["workshop-362175979"]={ configuration_options={ ["Draw over FoW"]="disabled" }, enabled=true },
   ["workshop-374550642"]={ configuration_options={ MAXSTACKSIZE=99 }, enabled=true },
@@ -14,13 +47,13 @@ return {
       SHAREMINIMAPPROGRESS=true,
       SHOWFIREICONS=true,
       SHOWPLAYERICONS=true,
-      SHOWPLAYERSOPTIONS=2
+      SHOWPLAYERSOPTIONS=2 
     },
-    enabled=true
+    enabled=true 
   },
   ["workshop-378965501"]={
     configuration_options={ MARBLESUITSPDMULT=1, PIGGYBACKSPDMULT=1 },
-    enabled=true
+    enabled=true 
   },
   ["workshop-441356490"]={
     configuration_options={
@@ -39,7 +72,7 @@ return {
       TRAP_DURABILITY=2,
       WEAPON_DURABILITY=2
     },
-    enabled=true
+    enabled=true 
   },
   ["workshop-458940297"]={
     configuration_options={
@@ -55,9 +88,9 @@ return {
       DFV_ShowFireTime="default",
       DFV_ShowInsulation="default",
       DFV_ShowTemperature="default",
-      DFV_ShowUses="default"
+      DFV_ShowUses="default" 
     },
-    enabled=true
+    enabled=true 
   },
   ["workshop-462434129"]={
     configuration_options={
@@ -75,9 +108,9 @@ return {
       MOD_RESTART_RESURRECT_HEALTH=0,
       MOD_RESTART_TRIGGER_MODE=1,
       MOD_RESTART_WELCOME_TIPS=true,
-      MOD_RESTART_WELCOME_TIPS_TIME=6
+      MOD_RESTART_WELCOME_TIPS_TIME=6 
     },
-    enabled=true
+    enabled=true 
   },
   ["workshop-463718554"]={
     configuration_options={
@@ -105,7 +138,7 @@ return {
       SPREADFIRE=2,
       STARTINGITEMS=true
     },
-    enabled=true
+    enabled=true 
   },
   ["workshop-501385076"]={ configuration_options={  }, enabled=true },
   ["workshop-597417408"]={
@@ -130,9 +163,9 @@ return {
       spider_Amount="0",
       spider_warrior_Amount="10",
       spiderden_Amount="10",
-      spoiled_food_Amount="0"
+      spoiled_food_Amount="0" 
     },
-    enabled=true
+    enabled=true 
   },
   ["workshop-623749604"]={
     configuration_options={
@@ -141,9 +174,9 @@ return {
       FoodSpoilage=1,
       Language="En",
       Position="Center",
-      Slots=80
+      Slots=80 
     },
-    enabled=true
+    enabled=true 
   },
-  ["workshop-679636739"]={ configuration_options={  }, enabled=true }
+  ["workshop-679636739"]={ configuration_options={  }, enabled=true } 
 }
