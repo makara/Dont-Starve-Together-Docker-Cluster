@@ -35,16 +35,16 @@ return {
     dragonfly="default",
     flint="default",
     flowers="default",
-    frograin="default",
+    frograin="rare",
     goosemoose="default",
     grass="default",
     houndmound="default",
-    hounds="default",
+    hounds="often",
     hunt="default",
     krampus="default",
     layout_mode="LinkNodesByKeys",
     liefs="default",
-    lightning="default",
+    lightning="rare",
     lightninggoat="default",
     loop="default",
     lureplants="default",
@@ -62,14 +62,14 @@ return {
     prefabswaps_start="default",
     rabbits="default",
     reeds="default",
-    regrowth="default",
+    regrowth="fast",
     roads="default",
     rock="default",
     rock_ice="default",
     sapling="default",
     season_start="default",
     specialevent="default",
-    spiders="default",
+    spiders="often",
     spring="default",
     start_location="default",
     summer="default",
@@ -80,11 +80,11 @@ return {
     trees="default",
     tumbleweed="default",
     walrus="default",
-    weather="default",
-    wildfires="default",
+    weather="rare",
+    wildfires="rare",
     winter="default",
     world_size="default",
-    wormhole_prefab="wormhole" 
+    wormhole_prefab="wormhole"
   },
   random_set_pieces={
     "Sculptures_2",
@@ -105,9 +105,9 @@ return {
     "Maxwell7",
     "Warzone_1",
     "Warzone_2",
-    "Warzone_3" 
+    "Warzone_3"
   },
   required_prefabs={ "multiplayer_portal" },
   substitutes={  },
-  version=3 
+  version=3
 }

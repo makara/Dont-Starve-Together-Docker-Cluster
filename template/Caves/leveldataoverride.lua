@@ -11,17 +11,17 @@ return {
   override_level_string=false,
   overrides={
     banana="default",
-    bats="default",
+    bats="often",
     berrybush="default",
     boons="default",
     branching="default",
     bunnymen="default",
     cave_ponds="default",
-    cave_spiders="default",
+    cave_spiders="often",
     cavelight="default",
     chess="default",
     disease_delay="default",
-    earthquakes="default",
+    earthquakes="rare",
     fern="default",
     fissure="default",
     flint="default",
@@ -38,7 +38,7 @@ return {
     petrification="default",
     prefabswaps_start="default",
     reeds="default",
-    regrowth="default",
+    regrowth="fast",
     roads="never",
     rock="default",
     rocky="default",
@@ -51,14 +51,14 @@ return {
     tentacles="default",
     touchstone="default",
     trees="default",
-    weather="default",
+    weather="rare",
     world_size="default",
     wormattacks="default",
     wormhole_prefab="tentacle_pillar",
     wormlights="default",
-    worms="default" 
+    worms="default"
   },
   required_prefabs={ "multiplayer_portal" },
   substitutes={  },
-  version=3 
+  version=3
 }
