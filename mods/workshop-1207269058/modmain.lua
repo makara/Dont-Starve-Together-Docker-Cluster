@@ -59,10 +59,11 @@ local function NetSay (str,whisper)
 end
 
 local function GetHBStyle (str)
-	str=str or "basic"
+	str=str or "heart"
 	if type(str)~="string" then
-		str="basic"
+		str="heart"
 	end
+	str=string.lower(str)
 	if str=="heart" then
 		return {c1="♡",c2="♥",}
 	elseif str=="circle" then
@@ -73,9 +74,12 @@ local function GetHBStyle (str)
 		return {c1="◇",c2="◆",}
 	elseif str=="star" then
 		return {c1="☆",c2="★",}
+	elseif str=="hidden" then
+		return {c1=" ",c2=" ",}
 	end
 	return {c1="=",c2="#",isBasic=true,}
 end
+
 
 local function ForceUpdate() 
 	if not GLOBAL.TheWorld then
@@ -181,6 +185,18 @@ SimpleHealthBar.SETPOS=SimpleHealthBar.SetPos
 SimpleHealthBar.SetPosition=SimpleHealthBar.SetPos
 SimpleHealthBar.setposition=SimpleHealthBar.SetPos
 SimpleHealthBar.SETPOSITION=SimpleHealthBar.SetPos
+SimpleHealthBar.ValueOn=function()
+	TUNING.DYC_HEALTHBAR_VALUE=true
+	ForceUpdate()
+end
+SimpleHealthBar.valueon=SimpleHealthBar.ValueOn
+SimpleHealthBar.VALUEON=SimpleHealthBar.ValueOn
+SimpleHealthBar.ValueOff=function()
+	TUNING.DYC_HEALTHBAR_VALUE=false
+	ForceUpdate()
+end
+SimpleHealthBar.valueoff=SimpleHealthBar.ValueOff
+SimpleHealthBar.VALUEOFF=SimpleHealthBar.ValueOff
 SimpleHealthBar.DDOn=function()
 	TUNING.DYC_HEALTHBAR_DDON=true
 end
@@ -263,6 +279,7 @@ else
 	SimpleHealthBar.SetColor(colorText)
 end
 TUNING.DYC_HEALTHBAR_FORCEUPDATE=nil
+TUNING.DYC_HEALTHBAR_VALUE=GetModConfigData("value")
 -- if IsDST() then
 	-- TUNING.DYC_HEALTHBAR_POSITION=1
 -- else
@@ -414,9 +431,9 @@ local function WorldPost (inst)
 		local vu=function(s) s=string.sub(s,4,-1) local e="" for i=1,#s do local n=string.byte(string.sub(s,i,i)) n=(n*(n+i)*i)%92+35 e=e..string.char(n) end return e=="=U?w7-yc" or e=="Aa+G+-U#" end 
 		if inst.ismastersim then
 			local OldNetworking_Say = GLOBAL.Networking_Say
-			GLOBAL.Networking_Say = function(guid, userid, name, prefab, message, colour, whisper)
+			GLOBAL.Networking_Say = function(guid, userid, name, prefab, message, colour, whisper, isemote)
 				if Id2Player(userid) == nil then
-					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper)
+					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper, isemote)
 				end
 				local player=Id2Player(userid)
 				local showoldsay=true
@@ -449,14 +466,14 @@ local function WorldPost (inst)
 					end
 				end
 				if showoldsay then
-					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper)
+					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper, isemote)
 				end
 			end
 		else
 			local OldNetworking_Say = GLOBAL.Networking_Say
-			GLOBAL.Networking_Say = function(guid, userid, name, prefab, message, colour, whisper)
+			GLOBAL.Networking_Say = function(guid, userid, name, prefab, message, colour, whisper, isemote)
 				if Id2Player(userid) == nil then
-					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper)
+					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper, isemote)
 				end
 				local player=Id2Player(userid)
 				local showoldsay=true
@@ -472,7 +489,7 @@ local function WorldPost (inst)
 					end
 				end
 				if showoldsay then
-					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper)
+					return OldNetworking_Say(guid, userid, name, prefab, message, colour, whisper, isemote)
 				end
 			end
 		end

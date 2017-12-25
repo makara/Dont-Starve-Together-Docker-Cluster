@@ -358,10 +358,14 @@ local function dychbfn()
 			inst.Label:Enable(true)
 			inst.Label:SetText(GetHpText(hpCurrent,hpMax))
 			inst.dychbtext.Label:Enable(true)
-			if TUNING.DYC_HEALTHBAR_POSITION~=0 then
-				inst.dychbtext.Label:SetText(string.format("%d/%d\n   ",hpCurrent,hpMax))
+			if TUNING.DYC_HEALTHBAR_VALUE then
+				if TUNING.DYC_HEALTHBAR_POSITION~=0 then
+					inst.dychbtext.Label:SetText(string.format("%d/%d\n   ",hpCurrent,hpMax))
+				else
+					inst.dychbtext.Label:SetText(string.format("  \n  \n%d/%d\n   ",hpCurrent,hpMax))
+				end
 			else
-				inst.dychbtext.Label:SetText(string.format("  \n  \n%d/%d\n   ",hpCurrent,hpMax))
+				inst.dychbtext.Label:SetText("")
 			end
 			if inst.SetHBHeight and inst.dychbheightconst then
 				inst:SetHBHeight(inst.dychbheightconst)

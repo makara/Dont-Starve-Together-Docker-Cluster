@@ -5,6 +5,9 @@
 -- [Simple Health Bar DST](http://steamcommunity.com/sharedfiles/filedetails/?id=1207269058)
 ServerModSetup("1207269058")
 
+-- [More Weapons and Magic](http://steamcommunity.com/sharedfiles/filedetails/?id=1234341720)
+ServerModSetup("1234341720")
+
 -- [Wormhole Marks [DST]](http://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
 ServerModSetup("362175979")
 
@@ -37,6 +40,9 @@ ServerModSetup("501385076")
 
 -- [Less lags](http://steamcommunity.com/sharedfiles/filedetails/?id=597417408)
 ServerModSetup("597417408")
+
+-- [[DST] Storeroom](http://steamcommunity.com/sharedfiles/filedetails/?id=623749604)
+ServerModSetup("623749604")
 
 -- [Trap Reset](http://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
 ServerModSetup("679636739")

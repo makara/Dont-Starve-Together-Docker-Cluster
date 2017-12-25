@@ -60,6 +60,7 @@ docker-compose up
 ### Server
 
 * [Simple Health Bar](http://steamcommunity.com/sharedfiles/filedetails/?id=1207269058)
+* [More Weapons and Magic](http://steamcommunity.com/sharedfiles/filedetails/?id=1234341720)
 * [Wormhole Marks](http://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
 * [Increased Stack size](http://steamcommunity.com/sharedfiles/filedetails/?id=374550642)
 * [Extra Equip Slots](http://steamcommunity.com/sharedfiles/filedetails/?id=375850593)
@@ -68,11 +69,10 @@ docker-compose up
 * [Tweak Those Tools, Tweaked!](http://steamcommunity.com/sharedfiles/filedetails/?id=441356490)
 * [Food Values - Item Tooltips (Server and Client)](http://steamcommunity.com/sharedfiles/filedetails/?id=458940297)
 * [Restart](http://steamcommunity.com/sharedfiles/filedetails/?id=462434129)
-* ~~[Map Discovery Sharing](http://steamcommunity.com/sharedfiles/filedetails/?id=462469447)~~
 * [Fix Multiplayer](http://steamcommunity.com/sharedfiles/filedetails/?id=463718554)
 * [Quick Pick](http://steamcommunity.com/sharedfiles/filedetails/?id=501385076)
 * [Less lags](http://steamcommunity.com/sharedfiles/filedetails/?id=597417408)
-* ~~[Limit Prefab](http://steamcommunity.com/sharedfiles/filedetails/?id=609675532)~~
+* [[DST] Storeroom](http://steamcommunity.com/sharedfiles/filedetails/?id=623749604)
 * [Trap Reset](http://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
 
 ### Client (recommended)

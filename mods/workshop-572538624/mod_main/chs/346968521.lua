@@ -1,3 +1,0 @@
-STRINGS.NAMES.WILSON_HOUSE = "威尔逊的房子"
-_G.ChinesePlus.RenameRecipe("WILSON_HOUSE", "家，甜蜜的家。")
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.WILSON_HOUSE = "好看的泥堆！"

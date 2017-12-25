@@ -1,12 +1,6 @@
 name = "Simple Health Bar DST"
-version = "1.05"
-description =  "Version:"..version..[[
-
-Just a simple health bar
-and an optional damage display feature
-简单的血条显示
-附带伤害显示
-]]
+version = "1.06"
+description =  "Version:"..version.."\nJust a simple health bar \nand an optional damage display feature \n简单的血条显示 \n附带伤害显示"
 author = "DYC"
 forumthread = ""
 api_version = 6
@@ -33,6 +27,7 @@ configuration_options =
 		label = "Style样式",
 		hover = "",
 		options =	{
+						{description = "Hidden隐藏", data = "hidden", hover = "Hide healthbar 隐藏血条"},
 						{description = "♥♥♥♡♡", data = "heart", hover = "Heart. 心形血格"},
 						{description = "●●●○○", data = "circle", hover = "Circle. 圆形血格"},
 						{description = "■■■□□", data = "square", hover = "Square. 方块形血格"},
@@ -40,6 +35,17 @@ configuration_options =
 						{description = "★★★☆☆", data = "star", hover = "Star. 星形血格"},
 					},
 		default = "heart",
+	},
+	
+	{
+		name = "value",
+		label = "Value数值",
+		hover = "Show health value?是否显示生命值",
+		options =	{
+						{description = "Shown显示", data = true, hover = ""},
+						{description = "Hidden隐藏", data = false, hover = ""},
+					},
+		default = true,
 	},
 	
 	{
@@ -113,6 +119,7 @@ configuration_options =
 		-- label = "样式",
 		-- hover = "",
 		-- options =	{
+						-- {description = "隐藏", data = "hidden", hover = "隐藏血条"},
 						-- {description = "♥♥♥♡♡", data = "heart", hover = "心形血格"},
 						-- {description = "●●●○○", data = "circle", hover = "圆形血格"},
 						-- {description = "■■■□□", data = "square", hover = "方块形血格"},
@@ -120,6 +127,17 @@ configuration_options =
 						-- {description = "★★★☆☆", data = "star", hover = "星形血格"},
 					-- },
 		-- default = "heart",
+	-- },
+	
+	-- {
+		-- name = "value",
+		-- label = "数值",
+		-- hover = "是否显示生命值",
+		-- options =	{
+						-- {description = "显示", data = true, hover = ""},
+						-- {description = "隐藏", data = false, hover = ""},
+					-- },
+		-- default = true,
 	-- },
 	
 	-- {
