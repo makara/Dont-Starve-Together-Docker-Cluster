@@ -26,9 +26,6 @@ ServerModSetup("378965501")
 -- [Tweak Those Tools, Tweaked!](http://steamcommunity.com/sharedfiles/filedetails/?id=441356490)
 ServerModSetup("441356490")
 
--- [Food Values - Item Tooltips (Server and Client)](http://steamcommunity.com/sharedfiles/filedetails/?id=458940297)
-ServerModSetup("458940297")
-
 -- [Restart](http://steamcommunity.com/sharedfiles/filedetails/?id=462434129)
 ServerModSetup("462434129")
 
@@ -38,11 +35,17 @@ ServerModSetup("463718554")
 -- [Quick Pick](http://steamcommunity.com/sharedfiles/filedetails/?id=501385076)
 ServerModSetup("501385076")
 
--- [Less lags](http://steamcommunity.com/sharedfiles/filedetails/?id=597417408)
-ServerModSetup("597417408")
+-- [Super Hound Waves](http://steamcommunity.com/sharedfiles/filedetails/?id=544126369)
+ServerModSetup("544126369")
 
 -- [[DST] Storeroom](http://steamcommunity.com/sharedfiles/filedetails/?id=623749604)
 ServerModSetup("623749604")
 
+-- [Show Me](http://steamcommunity.com/sharedfiles/filedetails/?id=666155465)
+ServerModSetup("666155465")
+
 -- [Trap Reset](http://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
 ServerModSetup("679636739")
+
+-- [OnlinePacks](http://steamcommunity.com/sharedfiles/filedetails/?id=714719224)
+ServerModSetup("714719224")

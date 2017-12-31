@@ -6,9 +6,9 @@ return {
       hblength=5,
       hbpos=1,
       hbstyle="heart",
-      value=true 
+      value=true
     },
-    enabled=true 
+    enabled=true
   },
   ["workshop-1234341720"]={
     configuration_options={
@@ -32,9 +32,9 @@ return {
       poseidon="normal",
       purplesword="normal",
       skullspear="normal",
-      teleportstaff="normal" 
+      teleportstaff="normal"
     },
-    enabled=true 
+    enabled=true
   },
   ["workshop-362175979"]={ configuration_options={ ["Draw over FoW"]="disabled" }, enabled=true },
   ["workshop-374550642"]={ configuration_options={ MAXSTACKSIZE=99 }, enabled=true },
@@ -47,13 +47,13 @@ return {
       SHAREMINIMAPPROGRESS=true,
       SHOWFIREICONS=true,
       SHOWPLAYERICONS=true,
-      SHOWPLAYERSOPTIONS=2 
+      SHOWPLAYERSOPTIONS=2
     },
-    enabled=true 
+    enabled=true
   },
   ["workshop-378965501"]={
     configuration_options={ MARBLESUITSPDMULT=1, PIGGYBACKSPDMULT=1 },
-    enabled=true 
+    enabled=true
   },
   ["workshop-441356490"]={
     configuration_options={
@@ -72,25 +72,7 @@ return {
       TRAP_DURABILITY=2,
       WEAPON_DURABILITY=2
     },
-    enabled=true 
-  },
-  ["workshop-458940297"]={
-    configuration_options={
-      DFV_ClientPrediction="default",
-      DFV_FueledSettings="default",
-      DFV_Language="EN",
-      DFV_MinimalMode="default",
-      DFV_PercentReplace="default",
-      DFV_ShowACondition="default",
-      DFV_ShowADefence="default",
-      DFV_ShowAType="default",
-      DFV_ShowDamage="default",
-      DFV_ShowFireTime="default",
-      DFV_ShowInsulation="default",
-      DFV_ShowTemperature="default",
-      DFV_ShowUses="default" 
-    },
-    enabled=true 
+    enabled=true
   },
   ["workshop-462434129"]={
     configuration_options={
@@ -108,9 +90,9 @@ return {
       MOD_RESTART_RESURRECT_HEALTH=0,
       MOD_RESTART_TRIGGER_MODE=1,
       MOD_RESTART_WELCOME_TIPS=true,
-      MOD_RESTART_WELCOME_TIPS_TIME=6 
+      MOD_RESTART_WELCOME_TIPS_TIME=6
     },
-    enabled=true 
+    enabled=true
   },
   ["workshop-463718554"]={
     configuration_options={
@@ -138,34 +120,29 @@ return {
       SPREADFIRE=2,
       STARTINGITEMS=true
     },
-    enabled=true 
+    enabled=true
   },
   ["workshop-501385076"]={ configuration_options={  }, enabled=true },
-  ["workshop-597417408"]={
+  ["workshop-544126369"]={
     configuration_options={
-      Clean_Period="600",
-      Cleaning_delay="0",
-      Cleaning_text="Cleaning server...",
-      Cleaning_warning_text="",
-      Custom_prefabs="",
-      babybeefalo_Amount="10",
-      bee_Amount="0",
-      beefalo_Amount="30",
-      beefaloherd_Amount="10",
-      carrot_planted_Amount="100",
-      eat_things="yes",
-      flower_Amount="100",
-      killerbee_Amount="0",
-      krampus_Amount="20",
-      lavae_Amount="0",
-      skeleton_player_Amount="100",
-      slurper_Amount="0",
-      spider_Amount="0",
-      spider_warrior_Amount="10",
-      spiderden_Amount="10",
-      spoiled_food_Amount="0" 
+      beefalo="default",
+      hound="default",
+      killerbee="default",
+      knight="default",
+      lightninggoat="default",
+      merm="default",
+      mosquito="default",
+      penguin="default",
+      perd="default",
+      pigman="default",
+      spider="default",
+      spider_hider="default",
+      tallbird="default",
+      walrus="default",
+      warg="default",
+      worm="default"
     },
-    enabled=true 
+    enabled=true
   },
   ["workshop-623749604"]={
     configuration_options={
@@ -174,9 +151,36 @@ return {
       FoodSpoilage=1,
       Language="En",
       Position="Center",
-      Slots=80 
+      Slots=80
     },
-    enabled=true 
+    enabled=true
   },
-  ["workshop-679636739"]={ configuration_options={  }, enabled=true } 
+  ["workshop-666155465"]={
+    configuration_options={
+      food_estimation=-1,
+      food_order=0,
+      food_style=0,
+      lang="auto",
+      show_food_units=-1
+    },
+    enabled=true
+  },
+  ["workshop-679636739"]={ configuration_options={  }, enabled=true },
+  ["workshop-714719224"]={
+    configuration_options={
+      ANNOUNCE_TIP=true,
+      BUFF_ITEMS=true,
+      CHALLENGE_MISSION=5,
+      CHALLENGE_MISSION_CD=3,
+      CHALLENGE_MISSION_DIFFICULTY=0,
+      CHALLENGE_MISSION_ROLL=70,
+      FIRST_AID_KIT=true,
+      NORMAL_ITEMS=true,
+      PACKS_CD=2,
+      PACKS_VALUE=1,
+      RARE_ITEMS=1,
+      RECORD_DEATH=true
+    },
+    enabled=true
+  }
 }

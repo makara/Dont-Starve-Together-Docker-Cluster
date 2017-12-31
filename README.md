@@ -59,21 +59,22 @@ docker-compose up
 
 ### Server
 
-* [Simple Health Bar](http://steamcommunity.com/sharedfiles/filedetails/?id=1207269058)
+* [Simple Health Bar DST](http://steamcommunity.com/sharedfiles/filedetails/?id=1207269058)
 * [More Weapons and Magic](http://steamcommunity.com/sharedfiles/filedetails/?id=1234341720)
-* [Wormhole Marks](http://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
+* [Wormhole Marks [DST]](http://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
 * [Increased Stack size](http://steamcommunity.com/sharedfiles/filedetails/?id=374550642)
 * [Extra Equip Slots](http://steamcommunity.com/sharedfiles/filedetails/?id=375850593)
 * [Global Positions](http://steamcommunity.com/sharedfiles/filedetails/?id=378160973)
 * [Remove Penalty](http://steamcommunity.com/sharedfiles/filedetails/?id=378965501)
 * [Tweak Those Tools, Tweaked!](http://steamcommunity.com/sharedfiles/filedetails/?id=441356490)
-* [Food Values - Item Tooltips (Server and Client)](http://steamcommunity.com/sharedfiles/filedetails/?id=458940297)
 * [Restart](http://steamcommunity.com/sharedfiles/filedetails/?id=462434129)
 * [Fix Multiplayer](http://steamcommunity.com/sharedfiles/filedetails/?id=463718554)
 * [Quick Pick](http://steamcommunity.com/sharedfiles/filedetails/?id=501385076)
-* [Less lags](http://steamcommunity.com/sharedfiles/filedetails/?id=597417408)
-* [[DST] Storeroom](http://steamcommunity.com/sharedfiles/filedetails/?id=623749604)
+* [Super Hound Waves](http://steamcommunity.com/sharedfiles/filedetails/?id=544126369)
+* [Storeroom](http://steamcommunity.com/sharedfiles/filedetails/?id=623749604)
+* [Show Me](http://steamcommunity.com/sharedfiles/filedetails/?id=666155465)
 * [Trap Reset](http://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
+* [OnlinePacks](http://steamcommunity.com/sharedfiles/filedetails/?id=714719224)
 
 ### Client (recommended)
 
