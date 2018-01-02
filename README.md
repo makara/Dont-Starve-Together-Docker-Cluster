@@ -95,3 +95,9 @@ $ docker-compose up //启动服务器
 
 ## 问题
 - [ ] DST服务器自动安装更新mod
+
+## Path[Mac]
+
+* Server Config: `/Users/ole3021/Documents/Klei/DoNotStarveTogether/`
+* Mods: `/Users/ole3021/Library/Application Support/Steam/steamapps/common/Don't Starve Together/dontstarve_steam.app/Contents/mods`
+
