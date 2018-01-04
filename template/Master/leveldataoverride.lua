@@ -12,7 +12,7 @@ return {
   overrides={
     alternatehunt="default",
     angrybees="default",
-    antliontribute="default",
+    antliontribute="never",
     autumn="longseason",
     bearger="default",
     beefalo="default",
