@@ -1,6 +1,6 @@
 # Dont-Starve-Together-Docker-Cluster
 
-根据配置文件快速建立饥荒联机版(DST)Docker集群
+根据配置文件快速建立饥荒联机版 (DST)Docker 集群
 
 ## 运行状况
 
