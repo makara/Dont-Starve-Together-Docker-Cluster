@@ -16,8 +16,8 @@ RUN taskset -c 0 /root/steamcmd/steamcmd.sh \
             +quit
 RUN ln -s /root/steamcmd/linux32/libstdc++.so.6 /root/DST/bin/lib32/ && \
     cd /root/DST/bin && \
-    echo "taskset -c 0 /root/steamcmd/steamcmd.sh + login anonymous + force_install_dir /root/DST + app_update 343050 validate + quit" > start.sh && \
-    echo "/root/DST/bin/dontstarve_dedicated_server_nullrenderer -only_update_server_mods" > start.sh && \
+    echo "/root/steamcmd/steamcmd.sh +@ShutdownOnFailedCommand 1 +@NoPromptForPassword 1 +login anonymous +force_install_dir /root/DST +app_update 343050 +quit" > start.sh && \
+    echo "/root/DST/bin/dontstarve_dedicated_server_nullrenderer -only_update_server_mods" >> start.sh && \
     echo "/root/DST/bin/dontstarve_dedicated_server_nullrenderer -shard Master & /root/DST/bin/dontstarve_dedicated_server_nullrenderer -shard Caves" >> start.sh && \
     chmod +x start.sh
 VOLUME /root/.klei/DoNotStarveTogether/Cluster_1
