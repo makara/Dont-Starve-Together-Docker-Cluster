@@ -86,15 +86,6 @@ docker-compose up
 * [Auto Actions - Full client mod](http://steamcommunity.com/sharedfiles/filedetails/?id=651419070)
 * [Craft Pot](https://steamcommunity.com/sharedfiles/filedetails/?id=727774324)
 
-## 生成Cluster
-修改`infos`信息为自己服务器的信息
-
-```shell
-$ python3 makedata.py  //生成cluster配置文件
-$ cd ./data
-$ docker-compose up //启动服务器
-```
-
 ## 问题
 - [ ] DST服务器自动安装更新mod
 

@@ -21,11 +21,10 @@ version_format = '''version : "2"
 services:'''
 
 cluster_ini = '''[GAMEPLAY]
-game_mode = survival
-max_players = 15
+game_mode = endless
+max_players = 32
 pvp = false
 pause_when_empty = true
-
 
 [NETWORK]
 lan_only_cluster = false
@@ -35,10 +34,8 @@ cluster_name = {name}
 offline_cluster = false
 cluster_password = {passwd}
 
-
 [MISC]
 console_enabled = true
-
 
 [SHARD]
 shard_enabled = true
