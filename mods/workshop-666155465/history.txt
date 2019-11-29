@@ -1,3 +1,44 @@
+v0.49
+- Fixed Strength info (added pvp modifier on some mobs).
+- Fixed counting perishable component.
+- Added Warly's buff time to food.
+- Added buff time to items.
+- Fixed sanity aura scaling.
+- Added option to hide uses.
+- Added Force for oats.
+- Added repair info.
+
+v0.48
+- Added support of food memory.
+- Refresh Ice Box compatibility.
+
+v0.47
+- Added sanity aura info.
+- Fixed a bug in not eng/rus language packs.
+- Added hover description for "undefined" value in mod settings.
+
+v0.40
+- Added grow stage timer.
+
+v 0.39
+- Added support of stats absorption by food.
+- Fixed incompatibility with Follower Badges (finally!).
+- Removed gold value 1 or less.
+- Added some Serp's ideas: rainometer info etc
+- Now rock value available only in summer.
+- Added more info while wearing sleep/ice weapon.
+- Added temperature info for food.
+- Added growable component.
+
+TODO: spices of food. Remove uses of items. Buff name from food. More options (need testing).
+Добавить совместимость с  Item Info Client. True stale info (время до желтой порчи).
+
+v0.38
+- Fixed crash in Brazilian language.
+
+v0.37
+- Updated Traditional Chinese Language.
+
 v0.36
 - Fixed Chinese language.
 - Added Spanish language.

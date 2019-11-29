@@ -55,34 +55,36 @@ docker-compose up
 - 如果有任何建议或者 Bug 可以提 issue ，或者可以邮箱联系`A@Thoxvi.com`
 - (｡･ω･｡)ﾉ♡
 
+## Refs
+
+- [Dedicated Server Quick Setup Guide - Mac OS X](https://forums.kleientertainment.com/forums/topic/64687-dedicated-server-quick-setup-guide-mac-os-x/)
+- [Dedicated Server Settings Guide](https://forums.kleientertainment.com/forums/topic/64552-dedicated-server-settings-guide/)
+
 ## Mods
 
 ### Server
 
-* [Simple Health Bar DST](http://steamcommunity.com/sharedfiles/filedetails/?id=1207269058)
-* [More Weapons and Magic](http://steamcommunity.com/sharedfiles/filedetails/?id=1234341720)
-* [Wormhole Marks [DST]](http://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
-* [Increased Stack size](http://steamcommunity.com/sharedfiles/filedetails/?id=374550642)
-* [Extra Equip Slots](http://steamcommunity.com/sharedfiles/filedetails/?id=375850593)
-* [Global Positions](http://steamcommunity.com/sharedfiles/filedetails/?id=378160973)
-* [Remove Penalty](http://steamcommunity.com/sharedfiles/filedetails/?id=378965501)
-* [Tweak Those Tools, Tweaked!](http://steamcommunity.com/sharedfiles/filedetails/?id=441356490)
-* [Restart](http://steamcommunity.com/sharedfiles/filedetails/?id=462434129)
-* [Fix Multiplayer](http://steamcommunity.com/sharedfiles/filedetails/?id=463718554)
-* [Quick Pick](http://steamcommunity.com/sharedfiles/filedetails/?id=501385076)
-* [Super Hound Waves](http://steamcommunity.com/sharedfiles/filedetails/?id=544126369)
-* [Storeroom](http://steamcommunity.com/sharedfiles/filedetails/?id=623749604)
-* [Show Me](http://steamcommunity.com/sharedfiles/filedetails/?id=666155465)
-* [Trap Reset](http://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
-* [OnlinePacks](http://steamcommunity.com/sharedfiles/filedetails/?id=714719224)
+* [Wormhole Marks [DST]](https://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
+* [Increased Stack size](https://steamcommunity.com/sharedfiles/filedetails/?id=374550642)
+* [Extra Equip Slots](https://steamcommunity.com/sharedfiles/filedetails/?id=375850593)
+* [Health Info](https://steamcommunity.com/sharedfiles/filedetails/?id=375859599)
+* [Global Positions](https://steamcommunity.com/sharedfiles/filedetails/?id=378160973)
+* [Mineable Gems](https://steamcommunity.com/sharedfiles/filedetails/?id=380423963)
+* [Restart](https://steamcommunity.com/sharedfiles/filedetails/?id=462434129)
+* [Fix Multiplayer](https://steamcommunity.com/sharedfiles/filedetails/?id=463718554)
+* [No Thermal Stone Durability](https://steamcommunity.com/sharedfiles/filedetails/?id=466732225)
+* [Quick Pick](https://steamcommunity.com/sharedfiles/filedetails/?id=501385076)
+* [Don't Drop Everything](https://steamcommunity.com/sharedfiles/filedetails/?id=661253977)
+* [Show Me (Origin)](https://steamcommunity.com/sharedfiles/filedetails/?id=666155465)
+* [Trap Reset](https://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
 
 ### Client (recommended)
 
 * [Minimap HUD](http://steamcommunity.com/sharedfiles/filedetails/?id=345692228)
 * [Geometric Placement](http://steamcommunity.com/sharedfiles/filedetails/?id=351325790)
-* [Smarter Crock Pot](http://steamcommunity.com/sharedfiles/filedetails/?id=365119238)
 * [Combined Status](http://steamcommunity.com/sharedfiles/filedetails/?id=376333686)
 * [Auto Actions - Full client mod](http://steamcommunity.com/sharedfiles/filedetails/?id=651419070)
+* [Craft Pot](https://steamcommunity.com/sharedfiles/filedetails/?id=727774324)
 
 ## 生成Cluster
 修改`infos`信息为自己服务器的信息
@@ -98,6 +100,6 @@ $ docker-compose up //启动服务器
 
 ## Path[Mac]
 
-* Server Config: `/Users/ole3021/Documents/Klei/DoNotStarveTogether/`
-* Mods: `/Users/ole3021/Library/Application Support/Steam/steamapps/common/Don't Starve Together/dontstarve_steam.app/Contents/mods`
+* Server Config: `/Users/makara/Documents/Klei/DoNotStarveTogether/`
+* Mods: `/Users/makara/Library/Application Support/Steam/steamapps/common/Don't Starve Together/dontstarve_steam.app/Contents/mods`
 

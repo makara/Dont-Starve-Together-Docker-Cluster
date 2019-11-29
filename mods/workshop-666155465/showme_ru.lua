@@ -55,11 +55,31 @@ MY_STRINGS_OVERRIDE = {
 	durability = 'Прочность:',
 	strength = 'Сила:',
 	--aoe = 'AoE:',
+	precipitationrate = "Дождь:",
+	wetness = "Влага мира:",
+	fresh = "Освежится через",
+	food_memory = 'Память',
+	sanityaura = 'Аура:',
+	effectiveness = 'Эффективность:',
+	force = 'Сила:',
+	repairer = 'Починка:',
 }
 
 SHOWME_STRINGS = {
 	loyal = "вечная",
 	of = " из ",
+	temperature = 'Температура',
+	paused = 'Пауза',
+	already_fresh = 'Максимальная свежесть',
+	cheat_fresh = 'Читерский мод свежести',
+	Work = 'Добыча',
+	Absorb = 'Поглощение',
+	Attack = 'Атака',
+	['Moisture Immunity'] = 'Влагостойкость',
+	Electric = 'Электрический',
+	Glow = 'Свечение',
+	['Health Regen'] = 'Реген здоровья',
+	onpickup = ' при срывании',
 }
 
 FOOD_TAGS = { --"dried" and "precook" are excluded.
@@ -108,7 +128,7 @@ FOOD_TAGS = { --"dried" and "precook" are excluded.
 --Russian declension of numerals
 local st_tbl = {
 	units = {" единица "," единицы "," единиц "},
-	uses = {" использование из ", " использования из ", " использований из "},
+	--uses = {" использование из ", " использования из ", " использований из "},
 	days = {"день","дня","дней"},
 }
 
@@ -129,7 +149,8 @@ MY_DATA.units_of.fn = function(arr)
 	return StringTime(arr.param[1],"units")..s
 end
 MY_DATA.uses_of.fn = function(arr)
-	return StringTime(arr.param[1],"uses")..arr.param[2]
+	--return StringTime(arr.param[1],"uses")..arr.param[2]
+	return arr.param[1] .. ' / ' .. arr.param[2]
 end
 MY_DATA.perish.fn = function(arr)
 	local days = GLOBAL.tonumber(arr.param[1]) or 0
@@ -143,5 +164,18 @@ MY_DATA.perish.fn = function(arr)
 		return arr.data.desc .. " " .. tostring(days) .. " " .. st_tbl.days[3]
 	end
 end
+
+local old_buff_fn = MY_DATA.buff.fn;
+MY_DATA.buff.fn = function(arr)
+	old_buff_fn(arr)
+	local name = arr.param[1]
+	local bonus = arr.param[3]
+	local days = arr.param[2]
+	if bonus then
+		return name .. ' ' .. bonus .. '%' .. (days ~= '0' and ' длится ' .. StringTime(days,'days') or '')
+	end
+	return name .. ' длится ' .. StringTime(days,'days')
+end
+
 
 UpdateNewLanguage()

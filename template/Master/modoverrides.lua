@@ -1,44 +1,19 @@
 return {
-  ["workshop-1207269058"]={
-    configuration_options={
-      ddon=true,
-      hbcolor="dynamic",
-      hblength=5,
-      hbpos=1,
-      hbstyle="heart",
-      value=true
-    },
-    enabled=true
-  },
-  ["workshop-1234341720"]={
-    configuration_options={
-      battleaxe="normal",
-      book_dogs="normal",
-      book_freeze="normal",
-      book_healing="normal",
-      book_lava="normal",
-      book_light="normal",
-      book_meteor="normal",
-      book_sleepingfield="normal",
-      book_slowness="normal",
-      book_summon="normal",
-      book_tornado="normal",
-      deathscythe="normal",
-      flamesword="normal",
-      halberd="normal",
-      healingstaff="normal",
-      katana="normal",
-      pirate="normal",
-      poseidon="normal",
-      purplesword="normal",
-      skullspear="normal",
-      teleportstaff="normal"
-    },
-    enabled=true
-  },
-  ["workshop-362175979"]={ configuration_options={ ["Draw over FoW"]="disabled" }, enabled=true },
+  ["workshop-362175979"]={ configuration_options={ ["Draw over FoW"]="enabled" }, enabled=true },
   ["workshop-374550642"]={ configuration_options={ MAXSTACKSIZE=99 }, enabled=true },
   ["workshop-375850593"]={ configuration_options={  }, enabled=true },
+  ["workshop-375859599"]={
+    configuration_options={
+      divider=0,
+      random_health_value=0,
+      random_range=0,
+      send_unknwon_prefabs=false,
+      show_type=0,
+      unknwon_prefabs=0,
+      use_blacklist=true
+    },
+    enabled=true
+  },
   ["workshop-378160973"]={
     configuration_options={
       ENABLEPINGS=true,
@@ -51,26 +26,44 @@ return {
     },
     enabled=true
   },
-  ["workshop-378965501"]={
-    configuration_options={ MARBLESUITSPDMULT=1, PIGGYBACKSPDMULT=1 },
-    enabled=true
-  },
-  ["workshop-441356490"]={
+  ["workshop-380423963"]={
     configuration_options={
-      AMULET_DURABILITY=2,
-      ARMOR_DURABILITY=2,
-      BOOK_DURABILITY=2,
-      CAMPING_DURABILITY=2,
-      CLOTHING_DURABILITY=2,
-      DEBUGOPTIONS="Off",
-      FOOD_PRESERVATION=2,
-      FOOD_SELECTION="All",
-      GOLD_DURABILITY=2,
-      LIGHT_DURABILITY=2,
-      STAFF_DURABILITY=2,
-      TOOL_DURABILITY=2,
-      TRAP_DURABILITY=2,
-      WEAPON_DURABILITY=2
+      [""]=0,
+      boulder_blue=0.2,
+      boulder_purple=0.05,
+      change_cave_loot=false,
+      common_loot_charcoal=0,
+      common_loot_flint=0.35,
+      common_loot_rocks=0.35,
+      cutlichen=0,
+      durian=0,
+      flintless_blue=0.5,
+      flintless_purple=0.1,
+      flintless_red=0.2,
+      foliage=0,
+      gears=0,
+      goldvein_purple=0.05,
+      goldvein_red=0.1,
+      guano=0,
+      ice=0,
+      lightbulb=0,
+      moon_green=0.02,
+      moon_orange=0.02,
+      moon_yellow=0.02,
+      pinecone=0,
+      rare_loot_bluegem=0.015,
+      rare_loot_marble=0.015,
+      rare_loot_redgem=0.015,
+      rottenegg=0,
+      seeds=0,
+      spoiled_food=0,
+      stalagmite_green=0.02,
+      stalagmite_orange=0.02,
+      stalagmite_yellow=0.02,
+      uncommon_loot_goldnugget=0.05,
+      uncommon_loot_mole=0.05,
+      uncommon_loot_nitre=0.05,
+      uncommon_loot_rabbit=0.05
     },
     enabled=true
   },
@@ -80,10 +73,10 @@ return {
       MOD_RESTART_ALLOW_RESTART=true,
       MOD_RESTART_ALLOW_RESURRECT=true,
       MOD_RESTART_CD_BONUS=0,
-      MOD_RESTART_CD_KILL=0,
+      MOD_RESTART_CD_KILL=3,
       MOD_RESTART_CD_MAX=0,
-      MOD_RESTART_CD_RESTART=0,
-      MOD_RESTART_CD_RESURRECT=0,
+      MOD_RESTART_CD_RESTART=3,
+      MOD_RESTART_CD_RESURRECT=3,
       MOD_RESTART_FORCE_DROP_MODE=0,
       MOD_RESTART_IGNORING_ADMIN=true,
       MOD_RESTART_MAP_SAVE=2,
@@ -96,20 +89,20 @@ return {
   },
   ["workshop-463718554"]={
     configuration_options={
-      AMOUNTOFCHESTERS=8,
-      BEESSPEEDMULTIPLIER=1.2,
+      AMOUNTOFCHESTERS=24,
+      BEESSPEEDMULTIPLIER=1.5,
       CANHAUNT=1,
       CAVESTARTINGITEMS=true,
       DRAGONFLYBALANCE=true,
       DRYINGSPEEDMULTIPLIER=2,
-      EMPTYINVENTORYDAYS=-1,
+      EMPTYINVENTORYDAYS=0,
       FARMINGSPEEDMULTIPLIER=2,
       GHOSTSANITYDRAIN=false,
       KRAMPUSMULTIPLIER=2,
       MAXMAXPLAYERS=32,
       NIGHTSTARTINGITEMS=true,
       PREVENTBURNING=0,
-      PREVENTDESTROYINGDAYS=2,
+      PREVENTDESTROYINGDAYS=0,
       PREVENTSTEALINGDAYS=0,
       PVPSTARTINGITEMS=true,
       RENEWLIMITEDRESOURCES=18,
@@ -117,70 +110,30 @@ return {
       REVEALMAP=1,
       REVIVERCRAFTPENALTY=false,
       SEASONSTARTINGITEMS=true,
-      SPREADFIRE=2,
+      SPREADFIRE=1,
       STARTINGITEMS=true
     },
     enabled=true
   },
-  ["workshop-501385076"]={ configuration_options={  }, enabled=true },
-  ["workshop-544126369"]={
-    configuration_options={
-      beefalo="default",
-      hound="default",
-      killerbee="default",
-      knight="default",
-      lightninggoat="default",
-      merm="default",
-      mosquito="default",
-      penguin="default",
-      perd="default",
-      pigman="default",
-      spider="default",
-      spider_hider="default",
-      tallbird="default",
-      walrus="default",
-      warg="default",
-      worm="default"
-    },
-    enabled=true
-  },
-  ["workshop-623749604"]={
-    configuration_options={
-      Craft="Normal",
-      Destroyable="DestroyByPlayer",
-      FoodSpoilage=1,
-      Language="En",
-      Position="Center",
-      Slots=80
-    },
+  ["workshop-466732225"]={ configuration_options={  }, enabled=true },
+  ["workshop-501385076"]={ configuration_options={ quick_harvest=true }, enabled=true },
+  ["workshop-661253977"]={
+    configuration_options={ amudiao=true, baodiao=0, kong=0, rendiao=0, zbdiao=true },
     enabled=true
   },
   ["workshop-666155465"]={
     configuration_options={
+      chestB=-1,
+      chestG=-1,
+      chestR=-1,
       food_estimation=-1,
       food_order=0,
       food_style=0,
       lang="auto",
-      show_food_units=-1
+      show_food_units=-1,
+      show_uses=-1
     },
     enabled=true
   },
-  ["workshop-679636739"]={ configuration_options={  }, enabled=true },
-  ["workshop-714719224"]={
-    configuration_options={
-      ANNOUNCE_TIP=true,
-      BUFF_ITEMS=true,
-      CHALLENGE_MISSION=5,
-      CHALLENGE_MISSION_CD=3,
-      CHALLENGE_MISSION_DIFFICULTY=0,
-      CHALLENGE_MISSION_ROLL=70,
-      FIRST_AID_KIT=true,
-      NORMAL_ITEMS=true,
-      PACKS_CD=2,
-      PACKS_VALUE=1,
-      RARE_ITEMS=1,
-      RECORD_DEATH=true
-    },
-    enabled=true
-  }
+  ["workshop-679636739"]={ configuration_options={  }, enabled=true }
 }

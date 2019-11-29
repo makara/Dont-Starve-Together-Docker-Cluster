@@ -13,11 +13,18 @@ local GetGlobal=function(gname,default)
 	return res
 end
 
+--nice round function
+local round2=function(num, idp)
+	return _G.tonumber(string.format("%." .. (idp or 0) .. "f", num))
+end
+
+
 --Locals (Add compatibility with any other mineable mods).
 local mods = GetGlobal("mods",{})
 
 local GetTime = _G.GetTime
 local TheNet = _G.TheNet
+local is_PvP = TheNet:GetDefaultPvpSetting()
 local SERVER_SIDE = TheNet:GetIsServer()
 local CLIENT_SIDE =	 TheNet:GetIsClient() or (SERVER_SIDE and not TheNet:IsDedicated())
 
@@ -42,6 +49,30 @@ local show_food_units = tonumber(GetModConfigData("show_food_units",true)) or -1
 if show_food_units == -1 then
 	show_food_units = tonumber(GetModConfigData("show_food_units")) or 0
 end
+print('show_food_units',show_food_units,GetModConfigData("show_food_units",true),GetModConfigData("show_food_units"))
+
+local show_uses = tonumber(GetModConfigData("show_uses",true)) or -1
+if show_uses == -1 then
+	show_uses = tonumber(GetModConfigData("show_uses")) or 0
+end
+print('show_uses',show_uses,GetModConfigData("show_uses",true),GetModConfigData("show_uses"))
+
+local chestR = tonumber(GetModConfigData('chestR',true)) or -1
+if chestR == -1 then
+	chestR = tonumber(GetModConfigData('chestR')) or 0.3
+	if (chestR == -1) then chestR = 0.3 end
+end
+local chestG = tonumber(GetModConfigData('chestG',true)) or -1
+if chestG == -1 then
+	chestG = tonumber(GetModConfigData('chestG')) or 1
+	if (chestG == -1) then chestG = 1 end
+end
+local chestB = tonumber(GetModConfigData('chestB',true)) or -1
+if chestB == -1 then
+	chestB = tonumber(GetModConfigData('chestB')) or 1
+	if (chestB == -1) then chestB = 1 end
+end
+--print('RGB CHEST',chestR,chestG,chestB)
 
 --Название на английском, краткая сетевая строка-алиас (для пересылки).
 --Если алиас начинается с маленькой буквы, то он обязан быть длиной в 1 букву. Если с большой, то 2 (вторая буква может быть любого регистра).
@@ -112,7 +143,22 @@ local MY_STRINGS =
 	{ durability = 'Durability:' },
 	{ strength = 'Strength:' },
 	{ aoe = "AoE:" },
+	
+	{ food_temperature = '' },
+	{precipitationrate="Global Rain:" },
+	{wetness="Global Wetness:" },
+	{growable='' },
+	
+	{sanityaura='Sanity Aura:' },
+	{fresh='Fresh in'}, --Fresh in N days (with mod Better Ice Box)
+	{frigde='frigde'}, --For icebox etc
+	{food_memory='Memory'},
+	{buff=''},
+	{effectiveness='Effectiveness:'},
+	{force='Force:'},
+	{repairer='Repair:'},
 }
+--print("Show Me MY_STRINGS =",#MY_STRINGS); --73 now. Must be less than 94
 
 SHOWME_STRINGS = {
 	loyal = "forever", --for very loyal pigman with loyalty over 9000
@@ -122,9 +168,39 @@ SHOWME_STRINGS = {
 	uses_1 = "1 use of ",
 	uses_many = " uses of ", --X uses of Y, where X > 1
 	days = " days", --Spoil in N days.
+	temperature = "Temperature", -- used at least in food info
+	paused = 'Paused',
+	already_fresh = 'Maximum freshness',
+	cheat_fresh = 'Cheat mod detected',
+	onpickup = ' on pick up', --for flowers
 }
 
 FOOD_TAGS = {}
+
+--Docode from char to index in MY_STRINGS
+local function decodeFirstSymbol(sym)
+	--local my_s = MY_STRINGS[string.byte(v:sub(1,1))-64]
+	local c = string.byte(sym);
+	local idx;
+	if c>=64 and c<=126 then idx=c-64 -- '@' is en "error" symbol or use "as is" (a param string). It must be converted to 0.
+	elseif c>=32 and c<=62 then idx=c+31
+	elseif c>=17 and c<=31 then idx=c+77
+	else idx=0 end
+	--print('dec_idx',idx,tostring(MY_STRINGS[idx] and MY_STRINGS[idx].key))
+	return idx
+end
+
+--Encode index to one ascii symbol, starting from "A".
+--Symbol "@" is a special symbol for unformatted info, e.g. "@Hello".
+--Symbol \2 is a special separator. All info after \2 is ignored (in whole string).
+local function encodeFirstSymbol(idx) --print('idx',idx)
+	if (idx <= 62) then return string.char(idx+64) -- 1-62: chars 65-126
+	elseif (idx <= 93) then return string.char(idx-31) -- 63-93: chars 32-62
+	elseif (idx <= 108) then return string.char(idx-77) -- 94-108: chars = error (17-31)
+	else return string.char(63) end -- error
+	--not 63 and 64
+	--sym = i < 63 and string.char(i+64) or string.char(i-32), -- A+
+end
 
 MY_DATA = {}
 for i,v in ipairs(MY_STRINGS) do
@@ -132,7 +208,7 @@ for i,v in ipairs(MY_STRINGS) do
 		MY_DATA[k] = {
 			desc = str,
 			id = i,
-			sym = string.char(i+64), -- A+
+			sym = encodeFirstSymbol(i), -- A+
 			fn = nil, --Function to return the proper string. By default: desc + " " + param1
 			percent = nil, --To add "%" at the end of the number
 		}
@@ -144,7 +220,7 @@ end
 
 local function DefaultDisplayFn(arr) --На вход особая структура: { data, param }. data - ссылка на элемент MY_DATA, a param - ссылка на массив п.
 	if arr.data == nil then
-		return arr.param_str --Выводим строку в том виде, в каком пришла от сервера (без первого символа)
+		return arr.param_str --Выводим строку в том виде, в каком пришла от сервера (без первого символа). Реакция на символ "@"
 	end
 	if arr.data.sign ~= nil and (tonumber(arr.param[1]) or -1) >= 0 then
 		arr.param[1] = "+" .. tostring(arr.param[1])
@@ -160,6 +236,41 @@ CallDefaultDisplayFn = DefaultDisplayFn --Для языкового модуля
 local function DefaultFraction(arr) --Типичный вывод: "Название: cur / max"
 	local cur,mx = arr.param[1], arr.param[2]
 	return arr.data.desc .. " " .. cur .. " / " .. mx 
+end
+
+MY_DATA.sanity.fn = function(arr)
+	local str = DefaultDisplayFn(arr)
+	if arr.param[2] == '1' then -- on pick up
+		return str .. SHOWME_STRINGS.onpickup
+	end
+	return str
+end
+
+MY_DATA.buff.fn = function(arr)
+	local name = SHOWME_STRINGS[arr.param[1]] or arr.param[1]
+	local bonus = tonumber(arr.param[3])
+	local days = arr.param[2]
+	if bonus then
+		bonus = round2((bonus - 1) * 100)
+		if bonus >= 0 then
+			bonus = "+" .. tostring(bonus)
+		end
+	end
+	arr.param[1] = name
+	arr.param[3] = bonus
+	if bonus then
+		return name .. ' ' .. tostring(bonus) .. '%' .. (days ~= '0' and ' lasts ' .. tostring(days) .. ' ' .. SHOWME_STRINGS.days or '')
+	end
+	return name .. ' lasts ' .. tostring(days) .. ' ' .. SHOWME_STRINGS.days
+end
+
+MY_DATA.strength.fn = function(arr)
+	if not arr.param[2] then
+		return DefaultDisplayFn(arr)
+	end
+	return arr.data.desc .. " " .. tostring(arr.param[1]) .. " (pvp:" ..
+		((tonumber(arr.param[2]) or -1) >= 0 and '+' or '')
+		.. tostring(arr.param[2]) .. "%)"
 end
 
 MY_DATA.hp.fn = function(arr) --Формирование строки на клиенте.
@@ -181,26 +292,55 @@ MY_DATA.water_poisoned.fn = function(arr)
 	return arr.data.desc
 end
 
-MY_DATA.timer.fn = function(arr)
-	local total = _G.tonumber(arr.param[1])
-	local name = arr.param[2]
+local function DataTimerFn(seconds)
+	if (not seconds) then
+		return 'error'
+	end
+	local total = math.abs(tonumber(seconds))
 	local hours = math.floor(total * 0.0002777777777777) --целое кол-во часов. 1/3600
 	local mins = math.floor((total - (hours * 3600)) * 0.01666666666666) --целое. 1/60
 	local secs = total - (hours * 3600) - (mins * 60) --тоже должно быть целым.
-	return arr.data.desc
-		.. (name and (' "'..name..'": ') or ': ')
-		.. (hours > 0 and (hours .. ':'
+	return 
+		(hours > 0 and (hours .. ':'
 			.. (mins > 9 and mins or ('0' .. mins)) .. ':'
 			.. (secs > 9 and secs or ('0' .. secs))
 		) or ( mins .. ':'
 			.. (secs > 9 and secs or ('0' .. secs))
 		))
 end
+MY_DATA.timer.fn = function(arr)
+	local name = arr.param[2]
+	return arr.data.desc
+		.. (name and (' "'..name..'": ') or ': ')
+		.. DataTimerFn(arr.param[1])
+end
+
 MY_DATA.durability.fn = DefaultFraction
+
+MY_DATA.dmg.fn = function(arr)
+	local str = DefaultDisplayFn(arr)
+	if arr.param[2] then --buff time
+		str = str .. ', ' .. DataTimerFn(arr.param[2])
+	end
+	return str
+end
+MY_DATA.armor.fn = MY_DATA.dmg.fn
+MY_DATA.effectiveness.fn = MY_DATA.dmg.fn
+
+-- Temperature: +10, 0:05
+MY_DATA.food_temperature.fn = function(arr) -- { temperature, time }
+	local temperature_str = arr.param[1]
+	if tonumber(temperature_str) > 0 then
+		temperature_str = '+' .. temperature_str
+	end
+	local time_str = DataTimerFn(arr.param[2])
+	return SHOWME_STRINGS.temperature .. ': ' .. temperature_str .. ', ' .. time_str
+end
 
 
 MY_DATA.sanity_character.percent = true
 MY_DATA.sanity.sign = true
+MY_DATA.sanityaura.sign = true
 MY_DATA.dmg_character.percent = true
 MY_DATA.dmg_character.sign = true
 MY_DATA.speed.percent = true
@@ -218,6 +358,10 @@ MY_DATA.sip.sign = true
 MY_DATA.trade_gold.sign = true
 MY_DATA.trade_rock.sign = true
 
+MY_DATA.effectiveness.percent = true
+MY_DATA.force.percent = true
+MY_DATA.repairer.sign = true
+
 local AOS_Temperature_fn --Клиентская функция конвертирования игровых юнтов температуры в визуальные.
 local is_Fahrenheit = false
 local function ConvertTemperature(val)
@@ -227,13 +371,17 @@ local function ConvertTemperature(val)
 	if is_Fahrenheit then
 		return math.floor(1.8*(val) + 32.5).."\176F" 
 	else
-		return math.floor(val/2 + 0.5) .. "\176C"
+		return math.floor(val*0.5 + 0.5) .. "\176C"
 	end
+end
+
+local function MainConvertTemperature(val)
+	return AOS_Temperature_fn and AOS_Temperature_fn(tonumber(val)) or ConvertTemperature(tonumber(val))
 end
 
 MY_DATA.temperature.sign = true
 MY_DATA.temperature.fn = function(arr)
-	arr.param[1] = AOS_Temperature_fn and AOS_Temperature_fn(tonumber(arr.param[1])) or ConvertTemperature(tonumber(arr.param[1]))
+	arr.param[1] = MainConvertTemperature(arr.param[1])
 	return DefaultDisplayFn(arr)
 end
 
@@ -291,6 +439,33 @@ MY_DATA.will_dry.fn = PerishFunction --Здесь тоже просто дела
 MY_DATA.grow_in.fn = PerishFunction
 MY_DATA.just_time.fn = PerishFunction
 
+MY_DATA.fresh.fn = function(arr)
+	if (arr.param[1] == "0" or arr.param[1] == "-0") then
+		return SHOWME_STRINGS.already_fresh;
+	elseif (arr.param[1] and arr.param[1]:sub(1,1) == '-') then
+		return SHOWME_STRINGS.cheat_fresh;
+	end
+	return PerishFunction(arr);
+end
+
+MY_DATA.frigde.fn = function(arr)
+	local v = tonumber(arr.param[1]);
+	if v == 0 then
+		return 'No rot'; --hard coded
+	elseif v == 1 then
+		return 'Broken';
+	elseif v > 1 then
+		return 'Hot +'..round2((v-1)*100)..'%';
+	elseif v > 0.5 then
+		return 'Weak +'..round2((v-0.5)*200)..'%';
+	elseif v > 0 then
+		return 'Cold +'..round2((0.5-v)*200)..'%';
+	elseif v < 0 then
+		return 'Refresh +'..round2((-v)*100)..'%';
+	end
+	return 'Paradox '..tostring(v); --error
+end
+
 local CONST_COUNT = { ['1'] = '(1)', ['2'] = '(2)', ['3'] = '(3)', ['4'] = '(4)', ['5'] = '(5)', ['6'] = '(6)', ['7'] = '(7)',
 	 ['8'] = '(8)', ['9'] = '(9)', ['10'] = '(10)', ['11'] = '(11)', ['12'] = '(12)', ['13'] = '(13)', ['14'] = '(14)', 
 	 ['15'] = '(15)', ['16'] = '(16)', ['17'] = '(17)', ['18'] = '(18)', ['19'] = '(19)', ['20'] = '(20)', 
@@ -328,6 +503,19 @@ MY_DATA.crop.fn = function(arr) -- Product: percent
 	return GetPrefabFancyName(arr.param[1]) .. ": " .. tostring(arr.param[2]) .. "%"
 end
 
+MY_DATA.growable.fn = function(arr) -- stage num or name, time, paused (1/0)
+	arr=arr.param;
+	local stagename = tonumber(arr[1]) and ('#' .. arr[1]) or arr[1];
+	local time_str = DataTimerFn(arr[2]);
+	return stagename .. (arr[3] == '1' and ' ('..SHOWME_STRINGS.paused..'): ' or ': ') .. time_str;
+end
+
+MY_DATA.food_memory.fn = function(arr)
+	local perc = tonumber(arr.param[1])
+	perc = perc and (round2(perc * 100) .. '%') or tostring(arr.param[1])
+	return arr.data.desc .. '(' .. perc .. '): ' .. DataTimerFn(arr.param[2])
+end
+
 --MY_STRINGS_OVERRIDE = nil
 
 --Сокрытие некоторой (назойливой) информации.
@@ -335,7 +523,12 @@ if show_food_units == 0 or show_food_units == 2 then
 	MY_DATA.units_of.hidden = true --Work on client only.
 end
 
+if show_uses == 0 or show_uses == 2 then
+	MY_DATA.uses_of.hidden = true --Work on client only.
+end
 
+
+local SHOWME_STRINGS_EN_OLD;
 function UpdateNewLanguage()
 	--print(MY_STRINGS_OVERRIDE)
 	if MY_STRINGS_OVERRIDE ~= nil then --Меняем локальный перевод (в т.ч. для хоста).
@@ -348,6 +541,11 @@ function UpdateNewLanguage()
 		end
 	end
 	--print(MY_STRINGS.aggro[1])
+	for k,v in pairs(SHOWME_STRINGS_EN_OLD) do
+		if not SHOWME_STRINGS[k] then
+			SHOWME_STRINGS[k] = v
+		end
+	end
 end
 
 
@@ -371,6 +569,7 @@ do --Пытаемся определить язык и загрузить соо
 			return
 		end
 		lang = lang:lower()
+		SHOWME_STRINGS_EN_OLD = SHOWME_STRINGS;
 		if support_languages[lang] ~= nil then
 			if support_languages[lang] ~= true then --алиас
 				lang = support_languages[lang]
@@ -510,15 +709,15 @@ if CLIENT_SIDE then
 			if status.temperature then
 				AOS = true
 				local old_SetString = status.temperature.num.SetString
-				status.temperature.num.SetString = function(self,s)
-					return old_SetString(self,FixTemperature(s))
+				status.temperature.num.SetString = function(self,s,...)
+					return old_SetString(self,FixTemperature(s),...)
 				end
 			end
 			if status.worldtemp then
 				AOS = true
 				local old_SetString = status.worldtemp.num.SetString
-				status.worldtemp.num.SetString = function(self,s)
-					return old_SetString(self,FixTemperature(s))
+				status.worldtemp.num.SetString = function(self,s,...)
+					return old_SetString(self,FixTemperature(s),...)
 				end
 			end
 		end
@@ -606,6 +805,9 @@ local is_AlwaysOnStatus = mods.active_mods_by_name["Combined Status"] or mods.ac
 --_G.arr(mod_names)
 
 local cooking = require("cooking")
+--buff_moistureimmunity, buff_electricattack, wormlight_light_greater, healthregenbuff, 
+--local test_buff_seen = {buff_playerabsorption=1, buff_workeffectiveness=1, buff_attack=1}
+--for _,struct in pairs(cooking.recipes) do for food,v in pairs(struct) do if v.prefabs then print(food) for i,p in ipairs(v.prefabs) do if not test_buff_seen[p] then print("\t"..p) end end end end end
 local ing = cooking.ingredients
 --local config = GetModConfigData("message_style") or 1
 
@@ -634,7 +836,76 @@ AddPrefabPostInit("world",function(inst)
 	ww = inst.state
 end)
 
-local function GetPerishTime(inst,c)
+
+local function GetPerishTime(inst, c)
+	local modifier = 1
+	local owner = c.inventoryitem and c.inventoryitem.owner or nil
+	if not owner and c.occupier then
+		owner = c.occupier:GetOwner() --Для птичек?
+	end
+
+	if owner then
+		if owner.components.preserver ~= nil then
+			modifier = owner.components.preserver:GetPerishRateMultiplier()
+		elseif owner:HasTag("fridge") then
+			if inst:HasTag("frozen") and not owner:HasTag("nocool") and not owner:HasTag("lowcool") then
+				modifier = TUNING.PERISH_COLD_FROZEN_MULT
+			else
+				modifier = TUNING.PERISH_FRIDGE_MULT
+			end
+		elseif owner:HasTag("foodpreserver") then
+			modifier = TUNING.PERISH_FOOD_PRESERVER_MULT
+		elseif owner:HasTag("spoiler") then
+			modifier = TUNING.PERISH_GROUND_MULT
+		elseif owner:HasTag("cage") and inst:HasTag("small_livestock") then
+			modifier = TUNING.PERISH_CAGE_MULT
+		end
+	else
+		modifier = TUNING.PERISH_GROUND_MULT
+	end
+
+	if inst:GetIsWet() then
+		modifier = modifier * TUNING.PERISH_WET_MULT
+	end
+
+	if ww.temperature < 0 then
+		if inst:HasTag("frozen") and not c.perishable.frozenfiremult then
+			modifier = TUNING.PERISH_COLD_FROZEN_MULT
+		else
+			modifier = modifier * TUNING.PERISH_WINTER_MULT
+		end
+	end
+
+	if c.perishable.frozenfiremult then
+		modifier = modifier * TUNING.PERISH_FROZEN_FIRE_MULT
+	end
+
+	if ww.temperature > TUNING.OVERHEAT_TEMP then
+		modifier = modifier * TUNING.PERISH_SUMMER_MULT
+	end
+
+	if c.perishable.localPerishMultiplyer then
+		modifier = modifier * c.perishable.localPerishMultiplyer
+	end
+
+	modifier = modifier * TUNING.PERISH_GLOBAL_MULT
+
+	local old_val = c.perishable.perishremainingtime
+	if old_val ~= nil then
+		local delta = old_val / modifier
+		if delta ~= nil then --and delta >= 0 then
+			if delta < 0 and c.perishable.perishtime and c.perishable.perishtime > 0 then --modifier < 0 !
+				return delta, (c.perishable.perishremainingtime - c.perishable.perishtime) / modifier;
+			end
+			return delta
+		end
+	end
+end
+
+
+
+
+local function old_v38_GetPerishTime(inst,c)
 	local modifier = 1
 	local owner = c.inventoryitem and c.inventoryitem.owner or nil
 	if owner == nil and c.occupier ~= nil then
@@ -687,7 +958,12 @@ local function GetPerishTime(inst,c)
 	local old_val = c.perishable.perishremainingtime
 	if old_val ~= nil then
 		local delta = old_val / modifier
-		return delta
+		if delta ~= nil then --and delta >= 0 then
+			if delta < 0 and c.perishable.perishtime and c.perishable.perishtime > 0 then --modifier < 0 !
+				return delta, (c.perishable.perishremainingtime - c.perishable.perishtime) / modifier;
+			end
+			return delta
+		end
 	end
 end
 
@@ -729,10 +1005,6 @@ end
 end --]]
 
 
---nice round function
-local round2=function(num, idp)
-	return _G.tonumber(string.format("%." .. (idp or 0) .. "f", num))
-end
 
 local is_admin
 local last_user_talbe = {}
@@ -777,6 +1049,77 @@ end
 local SPICIAL_STRUCTURES = {
 	campfire = true, coldfire = true,
 }
+
+--buff_moistureimmunity, buff_electricattack, wormlight_light_greater, healthregenbuff, 
+--local test_buff_seen = {buff_playerabsorption=1, buff_workeffectiveness=1, buff_attack=1}
+local KNOWN_BUFFS = {
+	buff_workeffectiveness = {
+		name = 'Work',
+		duration = 'BUFF_WORKEFFECTIVENESS_DURATION',
+		power = 'BUFF_WORKEFFECTIVENESS_MODIFIER',
+	},
+	buff_playerabsorption = {
+		name = 'Absorb',
+		duration = 'BUFF_PLAYERABSORPTION_DURATION',
+		power = 'BUFF_PLAYERABSORPTION_MODIFIER',
+		shift = true,
+	},
+	buff_attack = {
+		name = 'Attack',
+		duration = 'BUFF_ATTACK_DURATION',
+		power = 'BUFF_ATTACK_MULTIPLIER',
+	},
+	buff_moistureimmunity = {
+		name = 'Moisture Immunity',
+		duration = 'BUFF_MOISTUREIMMUNITY_DURATION',
+		--power = 'BUFF_WORKEFFECTIVENESS_MODIFIER',
+	},
+	buff_electricattack = {
+		name = 'Electric',
+		duration = 'BUFF_ELECTRICATTACK_DURATION',
+		--power = 'BUFF_WORKEFFECTIVENESS_MODIFIER',
+	},
+	wormlight_light_greater = {
+		name = 'Glow',
+		duration = function()
+			return TUNING.WORMLIGHT_DURATION and TUNING.WORMLIGHT_DURATION * 4 -- multiplier is hardcoded, sadly. See wormlight.lua
+		end,
+		--power = 'BUFF_WORKEFFECTIVENESS_MODIFIER',
+	},
+	healthregenbuff = {
+		name = 'Health Regen',
+		duration = 'JELLYBEAN_DURATION',
+		--power = 'BUFF_WORKEFFECTIVENESS_MODIFIER',
+	},
+}
+
+local function GetDebuffTime(viewer, buff_name)
+	local d = viewer.components.debuffable
+	if not d then
+		return
+	end
+	for k,v in pairs(d.debuffs) do
+		if k == buff_name then
+			local timer = v.inst.components.timer
+			if timer and timer.GetTimeLeft then
+				local tm = timer:GetTimeLeft('buffover')
+				return tm
+			end
+			break
+		end
+	end
+end
+
+
+--add a timer to player, so wood repairer info active
+local function AddBoatStatus(viewer)
+	if viewer.boat_status_task then
+		viewer.boat_status_task:Cancel()
+	end
+	viewer.boat_status_task = viewer:DoTaskInTime(120,function(inst)
+		inst.boat_status_task = nil
+	end)
+end
 
 --Основная функция получения описания.
 function GetTestString(item,viewer) --Отныне форкуемся от Tell Me, ибо всё сложно.
@@ -869,8 +1212,16 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 		if c.combat and c.combat.defaultdamage and c.combat.defaultdamage > 0 then
 			--Игнорируем всех, чья сила равна 10 или меньше.
 			local com = c.combat
-			local dmg = com.defaultdamage * (com.playerdamagepercent or 1)
-			cn("strength", math.floor( dmg + 0.5))
+			local dmg = com.defaultdamage
+			local pvp_perc = tonumber(com.playerdamagepercent) --modifier for NPC dmg on players, only works with NO WEAPON
+			if pvp_perc then
+				if pvp_perc == 1 or not is_PvP and prefab == "abigail" then
+					pvp_perc = nil
+				else
+					pvp_perc = round2((pvp_perc - 1)*100);
+				end
+			end
+			cn("strength", math.floor( dmg + 0.5), pvp_perc)
 			if com.areahitdamagepercent then --AoE
 				cn("aoe", math.floor( dmg * com.areahitdamagepercent + 0.5))
 			end
@@ -879,14 +1230,14 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 			local perc = 1-(1-h.absorb)*(1-h.playerabsorb)
 			cn("armor_character",round2(perc*100,0))
 		end
-		if item.asunaheal_score and item.prefab == "asuna" and TUNING.ASUNA_HEAL_SCORE_SWORD
+		if item.asunaheal_score and prefab == "asuna" and TUNING.ASUNA_HEAL_SCORE_SWORD
 			and item.asunaheal_score < TUNING.ASUNA_HEAL_SCORE_SWORD
 		then
 			local asuna_proof = round2(math.floor((item.asunaheal_score/TUNING.ASUNA_HEAL_SCORE_SWORD)*100+0.5),0)
 			if asuna_proof > 99 then
 				asuna_proof = 99
 			end
-			table.insert(desc_table, "$Asuna Proof: "..asuna_proof.."%")
+			table.insert(desc_table, "@Asuna Proof: "..asuna_proof.."%")
 		end
 		--inst.components.domesticatable:GetObedience()
 		if c.domesticatable ~= nil then
@@ -903,6 +1254,33 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 				end
 			end
 		end
+		if c.growable and c.growable.GetStage then
+			local g = c.growable
+      local t = (g.pausedremaining ~= nil and math.max(0, math.floor(g.pausedremaining)))
+				or (g.targettime ~= nil and math.floor(g.targettime - _G.GetTime()))
+				or nil
+			if t then
+				local stage = g.stage ~= 1 and tonumber(g.stage) or 1;
+				local data = g.stages and g.stages[stage];
+				cn("growable",data and data.name or stage,round2(t),g.pausedremaining ~= nil and 1 or 0);
+			end
+		end
+		if c.sanityaura then
+			local s = c.sanityaura;
+			local aura_val = s.aurafn and s.aurafn(item, viewer) or s.aura
+			if aura_val then
+				if s.fallofffn then -- fallofffn but not distance
+					local fall = s.fallofffn(item, viewer, 99)
+					if fall and fall ~= 0 and (fall < 0.98 or fall > 1.02) then
+						aura_val = aura_val / fall;
+					end
+				end
+				aura_val = round2(aura_val * TUNING.TOTAL_DAY_TIME * 0.125,1) --240 hardcoded. I'm not sure what it is
+				if aura_val ~= 0 then
+					cn("sanityaura",aura_val)
+				end
+			end
+		end
 	else --elseif prefab~="rocks" and prefab~="flint" then --No rocks and flint
 		--Part 1: primary info
 		if c.stewer and c.stewer.product and c.stewer.IsCooking and c.stewer:IsCooking() then
@@ -915,10 +1293,28 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 			local timer = round2(c.cooldown:GetTimeToCharged(),0)
 			cn("cooldown", timer)
 		end
+		if c.growable and c.growable.GetStage then
+			local g = c.growable
+      local t = (g.pausedremaining ~= nil and math.max(0, math.floor(g.pausedremaining)))
+				or (g.targettime ~= nil and math.floor(g.targettime - _G.GetTime()))
+				or nil
+			if t then
+				local stage = g.stage ~= 1 and tonumber(g.stage) or 1;
+				local data = g.stages and g.stages[stage];
+				cn("growable",data and data.name or stage,round2(t),g.pausedremaining ~= nil and 1 or 0);
+			end
+		end
 		--Part 2: secondary info
 		if c.armor and c.armor.absorb_percent and type(c.armor.absorb_percent)=="number" then
-			local r=c.armor.absorb_percent
-			cn("armor",round2(r*100,0))
+			local r=c.armor.absorb_percent --0.8
+			local tm_buff = GetDebuffTime(viewer, 'buff_playerabsorption')
+			if tm_buff then
+				local power = TUNING[KNOWN_BUFFS.buff_playerabsorption.power]
+				if power then
+					r = r + (1 - r) * power
+				end
+			end
+			cn("armor",round2(r*100,0),tm_buff and round2(tm_buff))
 			--Support of absorption mod.
 			if item.phys and (item.phys.blunt or item.phys.pierc or item.phys.slash) then
 				local p = item.phys
@@ -931,7 +1327,15 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 		if item.damage and type(item.damage)=="number" and item.damage>0 then
 			cn("dmg",round2(item.damage,1))
 		elseif c.weapon ~= nil and c.weapon.damage and type(c.weapon.damage)=="number" and c.weapon.damage>0 then
-			cn("dmg",round2(c.weapon.damage,1))
+			local r = c.weapon.damage
+			local tm_buff = GetDebuffTime(viewer, 'buff_attack')
+			if tm_buff then
+				local power = TUNING[KNOWN_BUFFS.buff_attack.power]
+				if power then
+					r = r * power
+				end
+			end
+			cn("dmg",round2(r,1),tm_buff and round2(tm_buff))
 			--Support of absobtion mod.
 			if item.phys_dmg then
 				local p = item.phys_dmg == "blunt" and "Blunt" or (
@@ -940,7 +1344,7 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 					)
 				)
 				if p ~= nil then
-					table.insert(desc_table, "$Type: "..p)
+					table.insert(desc_table, "@Type: "..p)
 				end
 			end
 		elseif c.zupalexsrangedweapons ~= nil
@@ -959,6 +1363,24 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 		elseif c.combat and c.combat.damage and type(c.combat.attackrange)=="number" and c.combat.attackrange>2.5 then
 			cn("range",round2(c.combat.attackrange,1))
 		end
+		if c.tool then
+			local found = nil
+			for k,v in pairs(c.tool.actions) do
+				if k == _G.ACTIONS.HAMMER or k == _G.ACTIONS.CHOP or k == _G.ACTIONS.MINE then
+					found = true
+					break
+				end
+			end
+			if found then
+				local tm_buff = GetDebuffTime(viewer, 'buff_workeffectiveness')
+				if tm_buff then
+					local power = TUNING[KNOWN_BUFFS.buff_workeffectiveness.power]
+					if power then
+						cn("effectiveness", round2(power*100), round2(tm_buff))
+					end
+				end
+			end
+		end
 		if c.insulator and c.insulator.insulation and type(c.insulator.insulation)=="number" and c.insulator.insulation~=0 then
 			if c.insulator.SetInsulationEx then --ServerMod
 				local winter,summer = c.insulator:GetInsulationEx()
@@ -970,10 +1392,12 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 				end
 			elseif c.insulator.GetInsulation then
 				local insul,typ = c.insulator:GetInsulation()
-				if typ == _G.SEASONS.WINTER then
-					cn("warm",round2(insul,0))
-				elseif typ == _G.SEASONS.SUMMER then
-					cn("summer",round2(insul,0))
+				if insul ~= 0 then
+					if typ == _G.SEASONS.WINTER then
+						cn("warm",round2(insul,0))
+					elseif typ == _G.SEASONS.SUMMER then
+						cn("summer",round2(insul,0))
+					end
 				end
 			end
 		end
@@ -983,12 +1407,30 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 		elseif c.equippable and c.equippable.dapperness and type(c.equippable.dapperness)=="number" and c.equippable.dapperness~=0 then
 			local sanity = round2(c.equippable.dapperness*54,1)
 			cn("sanity",sanity)
+		elseif prefab == "flower_evil" then
+			cn("sanity",-_G.TUNING.SANITY_TINY,1)
+		end
+		if c.sanityaura then
+			local s = c.sanityaura;
+			local aura_val = s.aurafn and s.aurafn(item, viewer) or s.aura
+			if aura_val then
+				if s.fallofffn then -- fallofffn but not distance
+					local fall = s.fallofffn(item, viewer, 99)
+					if fall and fall ~= 0 and (fall < 0.98 or fall > 1.02) then
+						aura_val = aura_val / fall;
+					end
+				end
+				aura_val = round2(aura_val * TUNING.TOTAL_DAY_TIME * 0.125,1)
+				if aura_val ~= 0 then
+					cn("sanityaura",aura_val)
+				end
+			end
 		end
 		if c.equippable and c.equippable.walkspeedmult and c.equippable.walkspeedmult ~= 1 then
 			local added_speed = math.floor((c.equippable.walkspeedmult - 1)*100+0.5)
 			cn("speed",added_speed)
 		end
-		if c.dapperness and c.dapperness.mitigates_rain and item.prefab ~= "umbrella" then
+		if c.dapperness and c.dapperness.mitigates_rain and prefab ~= "umbrella" then
 			cn("waterproof","90")
 		elseif item.protect_from_rain then
 			cn("waterproof",round2((item.protect_from_rain)*100,0))
@@ -999,6 +1441,9 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 			else
 				--desc = (desc=="" and "" or (desc.."\n")).."Waterproofer"
 			end
+		end
+		if c.oar and c.oar.force and tonumber(c.oar.force) then
+			cn('force',round2(c.oar.force*100))
 		end
 		--if c.striker and c.striker.chance and type(c.striker.chance) == "number" then
 		--	desc = cn(desc,round2((c.striker.chance)*100,0).."%","striker")
@@ -1015,21 +1460,22 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 				can_eat = viewer.components.eater:CanEat(item)
 			end
 			if can_eat then
+				local ed = c.edible
 				local should_Estimate_Stale = viewer and viewer.should_Estimate_Stale --client priority
 				if not should_Estimate_Stale then
 					should_Estimate_Stale = food_estimation ~= 0
 				end
 				local hp,hg,sn
-				if should_Estimate_Stale and c.edible.GetSanity then
+				if should_Estimate_Stale and ed.GetSanity then
 					--print("Estimate")
-					hp=round2(c.edible:GetHealth(viewer),1)
-					hg=round2(c.edible:GetHunger(viewer),1)
-					sn=round2(c.edible:GetSanity(viewer),1)
+					hp=round2(ed:GetHealth(viewer),1)
+					hg=round2(ed:GetHunger(viewer),1)
+					sn=round2(ed:GetSanity(viewer),1)
 				else
 					--print("Not Estimate")
-					hp=round2(c.edible.healthvalue,1)
-					hg=round2(c.edible.hungervalue,1)
-					sn=round2(c.edible.sanityvalue,1)
+					hp=round2(ed.healthvalue,1)
+					hg=round2(ed.hungervalue,1)
+					sn=round2(ed.sanityvalue,1)
 				end
 				if viewer ~= nil and viewer.FoodValuesChanger ~= nil then --Особая функция, призвание которой - менять еду при съедании.
 					--print("+")
@@ -1042,6 +1488,18 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 						sn=round2(sn2,1)
 					end
 				end
+				local base_mult = viewer ~= nil and viewer.components.foodmemory ~= nil and viewer.components.foodmemory:GetFoodMultiplier(prefab) or 1
+				do --check multiplier
+					local hp_mult = (ed.healthabsorption or 1) * base_mult
+					local hg_mult = (ed.hungerabsorption or 1) * base_mult
+					local sn_mult = (ed.sanityabsorption or 1) * base_mult
+					hp = hp * hp_mult
+					hg = hg * hg_mult
+					sn = sn * sn_mult
+				end
+				if prefab == "petals_evil" then
+					sn = round2(sn - _G.TUNING.SANITY_TINY,1)
+				end
 				if hp > 0 then
 					hp = "+" .. tostring(hp)
 				end
@@ -1052,12 +1510,102 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 					sn = "+" .. tostring(sn)
 				end
 				cn("food",hg,sn,hp)
+				if ed.temperaturedelta ~= 0 then -- food has temperature
+					if ed.temperatureduration ~= 0 and ed.chill < 1 and viewer ~= nil and viewer.components.temperature ~= nil then
+						local delta_multiplier = 1
+						local duration_multiplier = 1
+						if ed.spice and _G.TUNING.SPICE_MULTIPLIERS[ed.spice] then
+							if _G.TUNING.SPICE_MULTIPLIERS[ed.spice].TEMPERATUREDELTA then
+								delta_multiplier = delta_multiplier + _G.TUNING.SPICE_MULTIPLIERS[ed.spice].TEMPERATUREDELTA
+							end
+							if _G.TUNING.SPICE_MULTIPLIERS[ed.spice].TEMPERATUREDURATION then
+								duration_multiplier = duration_multiplier + _G.TUNING.SPICE_MULTIPLIERS[ed.spice].TEMPERATUREDURATION
+							end
+						end
+						local delta, duration = ed.temperaturedelta * (1 - ed.chill) * delta_multiplier, ed.temperatureduration * duration_multiplier
+						cn('food_temperature',round2(delta), round2(duration))
+					end				
+				end
+				if base_mult ~= 1 then --foodmemory
+					local fm = viewer.components.foodmemory
+					if fm.GetBaseFood and fm.foods then
+						local rec = fm.foods[fm:GetBaseFood(prefab)]
+						if rec then
+							local t = _G.GetTaskRemaining(rec.task)
+							cn('food_memory',round2(base_mult,2),round2(t))
+						end
+					end
+				end
+				--Spice effect
+				if ed.spice and false then
+					if ed.spice == 'SPICE_SUGAR' then --spice_sugar
+						cn("buff","Work",round2(TUNING.BUFF_WORKEFFECTIVENESS_MODIFIER,1),round2(TUNING.BUFF_WORKEFFECTIVENESS_DURATION/TUNING.TOTAL_DAY_TIME))
+					elseif ed.spice == 'SPICE_GARLIC' then --spice_garlic
+						cn("buff","Absorb",round2(TUNING.BUFF_PLAYERABSORPTION_MODIFIER + 1,1),round2(TUNING.BUFF_PLAYERABSORPTION_DURATION/TUNING.TOTAL_DAY_TIME))
+					elseif ed.spice == 'SPICE_CHILI' then --spice_chili
+						cn("buff","Attack",round2(TUNING.BUFF_ATTACK_MULTIPLIER,1),round2(TUNING.BUFF_ATTACK_DURATION/TUNING.TOTAL_DAY_TIME))
+					end
+				end
+				--Warly effects
+				for _,struct in pairs(cooking.recipes) do
+					for food,v in pairs(struct) do
+						if food == prefab then
+							if not v.prefabs then
+								break
+							end
+							for i,buff_name in ipairs(v.prefabs) do
+								local duration = nil
+								local power = nil
+								local data = KNOWN_BUFFS[buff_name]
+								if data then
+									if type(data.duration) == 'function' then
+										duration = data.duration()
+									else
+										duration=TUNING[data.duration]
+									end
+									if data.power then
+										power=TUNING[data.power]
+									end
+									if data.shift and data.power then
+										power = power + 1
+									end
+									buff_name = data.name
+								else
+									local up = buff_name:upper();
+									duration = TUNING[up .. '_DURATION']
+									power = TUNING[up .. '_MULTIPLIER'] or TUNING[up .. '_MODIFIER']
+									if buff_name:find("buff_",1,true) == 1 then
+										buff_name = buff_name:sub(6)
+									end
+									if buff_name:find("buff",#buff_name-3,true) then
+										buff_name = buff_name:sub(1,#buff_name-4)
+									end
+								end
+								if duration then
+									duration = round2(duration / TUNING.TOTAL_DAY_TIME,1)
+									cn("buff",buff_name,duration,power)
+								end
+							end
+						end
+					end
+				end
+				
+				
 			end
 		end
 		if c.perishable ~= nil and c.perishable.updatetask ~= nil then
-			local time = GetPerishTime(item, c)
+			local time, fresh = GetPerishTime(item, c)
 			if time ~= nil then
-				cn("perish",round2(time/TUNING.TOTAL_DAY_TIME,1))
+				if time < 0 then
+					if fresh then
+						if fresh < 0 then
+							--fresh = 0
+						end
+						cn("fresh",round2(fresh/TUNING.TOTAL_DAY_TIME,1))
+					end
+				elseif time ~= math.huge and time ~= -math.huge then
+					cn("perish",round2(time/TUNING.TOTAL_DAY_TIME,1))
+				end
 			end
 		end
 		if ing[prefab] and show_food_units ~= 2 then -- ==2 means that food info is forbidden on the server.
@@ -1173,12 +1721,21 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 			end
 		end
 		if c.tradable then
-			if c.tradable.goldvalue and c.tradable.goldvalue > 0 then
+			if c.tradable.goldvalue and c.tradable.goldvalue > 1 then
 				cn("trade_gold", c.tradable.goldvalue)
 			end
-			if c.tradable.rocktribute and c.tradable.rocktribute > 0 then
+			if c.tradable.rocktribute and c.tradable.rocktribute > 0 and _G.TheWorld.state.issummer then
 				cn("trade_rock", c.tradable.rocktribute)
 			end
+		end
+		if TUNING.PERISH_FRIDGE_MULT ~= 0.5 and item:HasTag("fridge") then --icebox etc
+			local fridge = tonumber(TUNING.PERISH_FRIDGE_MULT);
+			if fridge then
+				cn("frigde",round2(fridge,1))
+			end
+		end
+		if viewer.boat_status_task and c.repairer and c.repairer.healthrepairvalue and c.repairer.healthrepairvalue ~= 0 then
+			cn("repairer",round2(c.repairer.healthrepairvalue,2))
 		end
 		------------------Check prefabs?----------------------
 		if prefab=="panflute" then
@@ -1196,15 +1753,15 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 			cn(c.fishable.fishleft==1 and "fish" or "fishes",c.fishable.fishleft)
 		elseif prefab=="aqvarium" and item.data then
 			if item.data.seeds and item.data.seeds>0 then
-				table.insert(desc_table, "$Seeds: "..tostring(item.data.seeds))
+				table.insert(desc_table, "@Seeds: "..tostring(item.data.seeds))
 			end
 			if item.data.meat and item.data.meat>0 then
-				table.insert(desc_table, "$Meat: "..tostring(item.data.meat))
+				table.insert(desc_table, "@Meat: "..tostring(item.data.meat))
 				--desc = cn(desc,item.data.meat,"Meat:",true)
 			end
 			local need_wet= item.data.need_wet or 60
 			if item.data.wet and item.data.wet>0 and item.data.wet<need_wet then
-				table.insert(desc_table, "$Water: "..tostring(round2(100*item.data.wet/need_wet).."%"))
+				table.insert(desc_table, "@Water: "..tostring(round2(100*item.data.wet/need_wet).."%"))
 				--desc = cn(desc,round2(100*item.data.wet/need_wet).."%","Water:",true)
 			end
 			if item.total_heat then
@@ -1214,17 +1771,44 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 					cn("temperature",tostring(round2(temp,1)))
 				end
 			end
+		elseif prefab=="rainometer" then
+			local function inSine(t, b, c, d)
+				return -c * math.cos(t / d * (math.pi / 2)) + c + b
+			end
+			cn("precipitationrate",round2(inSine(_G.TheWorld.state.precipitationrate, 0, 0.75, 1),3).."/s") 
+			cn("wetness",round2(_G.TheWorld.state.wetness,1)) 
+		elseif prefab=="winterometer" then
+			local w=_G.TheWorld.state
+			local tt=round2(w.temperature,1)
+			cn("temperature",tt)
+		elseif prefab=="spice_garlic" then
+			local data = KNOWN_BUFFS.buff_playerabsorption
+			cn("buff",data.name,0,TUNING[data.power]+1)
+		elseif prefab=="spice_chili" then
+			local data = KNOWN_BUFFS.buff_attack
+			cn("buff",data.name,0,TUNING[data.power])
+		elseif prefab=="spice_sugar" then
+			local data = KNOWN_BUFFS.buff_workeffectiveness
+			cn("buff",data.name,0,TUNING[data.power])
+		elseif prefab=="moon_fissure" and c.sanityaura and c.sanityaura.aurafn then
+			local current_sanity = c.sanityaura.aurafn(item, viewer)
+			local max_sanity = 100/(TUNING.SEG_TIME*2) -- hardcoded!
+			local effectiveness = current_sanity / max_sanity
+			cn("effectiveness",round2(effectiveness * 100))
+		elseif prefab=='boat' or prefab=='anchor' or prefab=='mast' or prefab=='boat_leak' or prefab=='mast_malbatross' or prefab=='steeringwheel' then
+			--no info but boat status
+			AddBoatStatus(viewer)
 		end
 		--Charges: lightning rod / lamp
 		if item.chargeleft and item.chargeleft > 0 then	
-			table.insert(desc_table, "$Days left: "..tostring(math.floor(item.chargeleft+0.5)))
+			table.insert(desc_table, "@Days left: "..tostring(math.floor(item.chargeleft+0.5)))
 		end
 		--Mod support:
 		if item.GetShowItemInfo then
 			local custom1, custom2, custom3 = item:GetShowItemInfo()
-			if custom1 then table.insert(desc_table, "$"..tostring(custom1)) end
-			if custom2 then table.insert(desc_table, "$"..tostring(custom2)) end
-			if custom3 then table.insert(desc_table, "$"..tostring(custom3)) end
+			if custom1 then table.insert(desc_table, "@"..tostring(custom1)) end
+			if custom2 then table.insert(desc_table, "@"..tostring(custom2)) end
+			if custom3 then table.insert(desc_table, "@"..tostring(custom3)) end
 		end
 		if c.pickable and c.pickable.task then --Трава и ветки.
 			local targettime = c.pickable.targettime
@@ -1237,7 +1821,7 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 		end
 		--[[if c.witherable then
 			local time = GetTime()
-			table.insert(desc_table, "$witherable: "
+			table.insert(desc_table, "@witherable: "
 				..tostring(c.delay_to_time and (time-c.delay_to_time)) .. ", "
 				..tostring(c.task_to_time and (time-c.task_to_time)) .. ", "
 				..tostring(c.protect_to_time and (time-c.protect_to_time)) .. ", "
@@ -1246,7 +1830,7 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 		end
 		if c.diseaseable then
 			local time = GetTime()
-			table.insert(desc_table, "$diseaseable: "
+			table.insert(desc_table, "@diseaseable: "
 				--..tostring(c._spreadtask and (time-c.delay_to_time)) .. ", "
 				--..tostring(c.task_to_time and (time-c.task_to_time)) .. ", "
 				--..tostring(c.protect_to_time and (time-c.protect_to_time)) .. ", "
@@ -1301,10 +1885,32 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 	if viewer and type(viewer)=="table" and viewer.components and viewer.components.inventory then
 		local weapon = viewer.components.inventory:GetEquippedItem(_G.EQUIPSLOTS.HANDS)
 		if weapon then
+			local resist = nil --base resist
+			local total_resist = nil --base + bonus resist
+			local now = nil --amount of current resist
 			if weapon.prefab=="icestaff" and c.freezable then
-				cn("resist",c.freezable.resistance)
+				resist = c.freezable.resistance
+				total_resist = c.freezable.ResolveResistance and c.freezable:ResolveResistance() or resist
+				if c.freezable.coldness and c.freezable.coldness ~= 0 then
+					now = round2(total_resist - c.freezable.coldness,1)
+				end
+				--cn("resist",c.freezable.resistance)
 			elseif (weapon.prefab=="blowdart_sleep" or weapon.prefab=="panflute") and c.sleeper then
-				cn("resist",c.sleeper.resistance)
+				resist = c.sleeper.resistance
+				total_resist = resist -- there is sleep time bonus but not sleep armor bonus
+				if c.sleeper.sleepiness and c.sleeper.sleepiness ~= 0 then
+					now = round2(total_resist - c.sleeper.sleepiness,1)
+				end
+				--cn("resist",c.sleeper.resistance)
+			end
+			if resist then
+				if total_resist ~= resist then
+					resist = resist .. '+' .. round2(math.abs(total_resist-resist),1)
+				end
+				if now then
+					resist = now .. ' / ' .. resist
+				end
+				cn("resist",resist)
 			end
 		end
 	end
@@ -1336,7 +1942,7 @@ function GetTestString(item,viewer) --Отныне форкуемся от Tell 
 	--	desc = desc .. "\n" --Поднимаем описание предмета, чтобы оно было НАД предметом. Но лучше это сделать на клиенте.
 	--end
 	
-	return table.concat(desc_table,"\2")
+	return table.concat(desc_table,"\2") --an error with no info
 end
 
 --Main description function
@@ -1400,15 +2006,15 @@ do
 			return ""
 		end
 		--c.showme_hint
-		local i = string.find(c.showme_hint,';',1,true)
+		local i = string.find(c.showme_hint2,';',1,true)
 		if i == nil then --Строка имеет неправильный формат.
 			return ""
 		end
-		local guid = _G.tonumber(c.showme_hint:sub(1,i-1))
+		local guid = _G.tonumber(c.showme_hint2:sub(1,i-1))
 		if guid ~= inst.GUID then --guid не совпадает (либо вообще nil)
 			return ""
 		end
-		return c.showme_hint:sub(i+1)
+		return c.showme_hint2:sub(i+1)
 	end
 	if CLIENT_SIDE then
 		--patching Get Display Name. Нужно только клиенту.
@@ -1436,7 +2042,7 @@ do
 					end
 					old_inst = inst
 					--Посылаем желаемую подсказку.
-					SendModRPCToServer(MOD_RPC.ShowMeHint.Hint, inst.GUID, inst)
+					SendModRPCToServer(MOD_RPC.ShowMeSHint.Hint, inst.GUID, inst)
 				end
 			end)
 		end)--]]
@@ -1505,7 +2111,7 @@ do
 							if v ~= "" then
 								local param_str = v:sub(2)
 								local data = { param = UnpackData(param_str,","), param_str=param_str }
-								local my_s = MY_STRINGS[string.byte(v:sub(1,1))-64]
+								local my_s = MY_STRINGS[decodeFirstSymbol(v:sub(1,1))]; -- if "@", must pass nil
 								if my_s ~= nil then
 									data.data = MY_DATA[my_s.key]
 								end
@@ -1517,9 +2123,15 @@ do
 						--Формируем строку
 						str2=""
 						for i,v in ipairs(arr2) do
-							if v.data ~= nil and v.data.fn ~= nil then
-								str2=str2.. v.data.fn(v) .. "\n"
-							elseif v.hidden == nil then
+							if v.data ~= nil then
+								if v.data.hidden == nil then
+									if v.data.fn ~= nil then
+										str2=str2.. v.data.fn(v) .. "\n"
+									else
+										str2=str2 .. DefaultDisplayFn(v) .. "\n"
+									end
+								end
+							else
 								str2=str2 .. DefaultDisplayFn(v) .. "\n"
 							end
 						end
@@ -1558,7 +2170,7 @@ do
 					if target ~= save_target or last_check_time + 1 < GetTime() then
 						save_target = target
 						last_check_time = GetTime()
-						SendModRPCToServer(MOD_RPC.ShowMeHint.Hint, save_target.GUID, save_target)
+						SendModRPCToServer(MOD_RPC.ShowMeSHint.Hint, save_target.GUID, save_target)
 					end
 				else
 					--print("target nil")
@@ -1569,7 +2181,7 @@ do
 	end
 	
 	--Обработчик на сервере
-	AddModRPCHandler("ShowMeHint", "Hint", function(player, guid, item)
+	AddModRPCHandler("ShowMeSHint", "Hint", function(player, guid, item)
 		if player.player_classified == nil then
 			print("ERROR: player_classified not found!")
 			return
@@ -1577,18 +2189,19 @@ do
 		if item ~= nil and item.components ~= nil then
 			local s = GetTestString(item,player) --Формируем строку на сервере.
 			if s ~= "" then
-				player.player_classified.net_showme_hint:set(guid..";"..s) --Пакуем в строку и отсылаем обратно тому же игроку.
+				player.player_classified.net_showme_hint2:set(guid..";"..s) --Пакуем в строку и отсылаем обратно тому же игроку.
 			end
 		end
 	end)
 
 	--networking
+	-- showme_hint2 => "showme_hintbua." -- hash value: 78865, Ratio: 0.000078865
 	AddPrefabPostInit("player_classified",function(inst)
-		inst.showme_hint = ""
-		inst.net_showme_hint = _G.net_string(inst.GUID, "showme_hint", "showme_hint_dirty")
+		inst.showme_hint2 = ""
+		inst.net_showme_hint2 = _G.net_string(inst.GUID, "showme_hintbua.", "showme_hint_dirty2")
 		if CLIENT_SIDE then
-			inst:ListenForEvent("showme_hint_dirty",function(inst)
-				inst.showme_hint = inst.net_showme_hint:value()
+			inst:ListenForEvent("showme_hint_dirty2",function(inst)
+				inst.showme_hint2 = inst.net_showme_hint2:value()
 			end)
 		end
 	end)
@@ -1596,6 +2209,9 @@ end
 
 --Обработка сундуков
 do
+	local MAIN_VAR_NAME = 'net_ShowMe_chest';
+	local NETVAR_NAME = 'ShowMe_chestlq_.'; -- hash value: 983115,  Ratio: 0.000983115
+	local EVENT_NAME = 'ShowMe_chest_dirty';
 	--[[
 	If you want add your custom chest, use this code:
 		TUNING.MONITOR_CHESTS = TUNING.MONITOR_CHESTS or {}
@@ -1609,13 +2225,12 @@ do
 		safebox=1, safechest=1, safeicebox=1, --Safe mod.
 		red_treasure_chest=1, purple_treasure_chest=1, green_treasure_chest=1, blue_treasure_chest=1, --Treasure Chests mod.
 		backpack=1, candybag=1, icepack=1, piggyback=1, krampus_sack=1,
+		venus_icebox=1, chesterchest=1, --SL mod 
 	}
 	if TUNING.MONITOR_CHESTS then
 		for k in pairs(TUNING.MONITOR_CHESTS) do
 			MONITOR_CHESTS[k] = 1
 		end
-	--else
-		--TUNING.MONITOR_CHESTS = MONITOR_CHESTS --Это не нужно.
 	end
 	local _active --Текущий предмет в курсоре (на клиенте).
 	local _ing_prefab --Ингредиент. Через 5 секунд убирается.
@@ -1658,7 +2273,7 @@ do
 		--	print("Found!!!!! Problem solved",err)
 		--end
 		if c:IsEmpty() then
-			inst.net_ShowMe_chest:set('')
+			inst[MAIN_VAR_NAME]:set('')
 			return
 		end
 		local arr = {} -- [префаб]=true
@@ -1691,7 +2306,7 @@ do
 				s = k
 			end
 		end
-		inst.net_ShowMe_chest:set(s) --Посылаем данные.
+		inst[MAIN_VAR_NAME]:set(s) --Посылаем данные.
 	end
 	
 	--Обновляет подсветку сундука. Функция должна сама узнавать, что в руке игрока.
@@ -1714,7 +2329,7 @@ do
 				if inst.ShowMeColor then
 					inst.ShowMeColor(false)
 				else
-					inst.AnimState:SetMultColour(0.3,1,1,1)
+					inst.AnimState:SetMultColour(chestR,chestG,chestB,1)
 					inst.b_ShowMe_changed_color = true
 				end
 			end
@@ -1723,7 +2338,7 @@ do
 	
 	local function OnShowMeChestDirty(inst)
 		--inst.components.HuntGameLogic.hunt_kills = inst.components.HuntGameLogic.net_hunt_kills:value()
-		local str = inst.net_ShowMe_chest:value()
+		local str = inst[MAIN_VAR_NAME]:value()
 		--inst.test_str = str --test
 		--print('Test Chest:',str)
 		local t = inst.ShowMe_chest_table
@@ -1737,12 +2352,12 @@ do
 	end	
 
 	local function InitChest(inst)
-		inst.net_ShowMe_chest = net_string(inst.GUID, "ShowMe_chest", "ShowMe_chest_dirty" )
+		inst[MAIN_VAR_NAME] = net_string(inst.GUID, NETVAR_NAME, EVENT_NAME )
 		if CLIENT_SIDE then
-			inst:ListenForEvent("ShowMe_chest_dirty", OnShowMeChestDirty)
+			inst:ListenForEvent(EVENT_NAME, OnShowMeChestDirty)
 			chests_around[inst] = true
 			inst.ShowMe_chest_table = {}
-			inst.ShowTable = function() for k in pairs(inst.ShowMe_chest_table) do print(k) end end --debug
+			--inst.ShowTable = function() for k in pairs(inst.ShowMe_chest_table) do print(k) end end --debug
 			inst:ListenForEvent('onremove', function(inst)
 				chests_around[inst] = nil
 			end)
@@ -1752,6 +2367,7 @@ do
 		end
 		inst:ListenForEvent("onclose", OnClose)
 		inst:ListenForEvent("itemget", OnClose) --Для рюкзаков.
+		--There is inject in SmarterCrockPot!! : ContainerWidget.old_on_item_lose = ContainerWidget.OnItemLose
 		inst:ListenForEvent("itemlose", OnClose)
 		inst:DoTaskInTime(0,function(inst)
 			OnClose(inst) --Изначально тоже посылаем данные, а не только при закрытии. Ведь сундук мог быть загружен.
