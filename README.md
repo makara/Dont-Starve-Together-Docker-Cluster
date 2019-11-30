@@ -27,6 +27,15 @@
 3. 安装 `docker-compose` :如果你是 Ubuntu ，可以直接使用命令:`sudo apt install docker-compose`，如果不是，请前往 [Docker官方网站](https://docs.docker.com/compose/install/)，并寻找自己的操作系统的安装方式
 4. 至此，你应该有了一个正常的 Docker 环境，如果有问题可以根据 END 区的联系方式提交
 
+## Get your server token
+
+Find your server token with the following steps (*from the official guide*) and put in the `infos`   file before you run the Python script.
+
+- 2a. Start **Don't Starve Together** from Steam and click on the "**Play!**" button.
+- 2b. Click on the "**Account**" button.
+- 2c. On the accounts page, visit the “**GAMES**” page, then click the “**Don’t Starve Together Server**” button.
+- 2d. If you don’t have any server yet, please click the “**ADD NEW SERVER**” button. If you have a valid server, click the green “**CONFIGURE**” button. Expired servers are colored in red and should be deleted.
+
 ## 基本使用说明
 
 ### 步骤介绍
@@ -64,7 +73,7 @@ docker-compose up
 
 ### Server
 
-- [[API] Gem Core](https://steamcommunity.com/sharedfiles/filedetails/?id=1378549454)
+- [ [API] Gem Core](https://steamcommunity.com/sharedfiles/filedetails/?id=1378549454)
 - [Island Adventures - Assets](https://steamcommunity.com/sharedfiles/filedetails/?id=1467200656)
 - [Island Adventures](https://steamcommunity.com/sharedfiles/filedetails/?id=1467214795)
 - [Island Adventures - Essential Islands Addon](https://steamcommunity.com/sharedfiles/filedetails/?id=1780226102)
@@ -95,6 +104,6 @@ docker-compose up
 
 ## Path[Mac]
 
-- Server Config: `/Users/makara/Documents/Klei/DoNotStarveTogether/`
-- Mods: `/Users/makara/Library/Application Support/Steam/steamapps/common/Don't Starve Together/dontstarve_steam.app/Contents/mods`
+- Server Config: `~/Documents/Klei/DoNotStarveTogether/`
+- Mods: `~/Library/Application Support/Steam/steamapps/common/Don't Starve Together/dontstarve_steam.app/Contents/mods`
 
