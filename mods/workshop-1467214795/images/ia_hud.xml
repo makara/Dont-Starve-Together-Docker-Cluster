@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Atlas>
+	<Texture filename="ia_hud.tex" />
+	<Elements>
+		<Element name="equip_slot_boat_light.tex" u1="0.001" u2="0.264625" v2="0.999" v1="0.735375"/>
+		<Element name="equip_slot_boat_utility.tex" u1="0.266625" u2="0.53025" v2="0.999" v1="0.735375"/>
+		<Element name="gourmetstar.tex" u1="0.53225" u2="0.608375" v2="0.999" v1="0.92678125"/>
+		<Element name="tab_nautical.tex" u1="0.001" u2="0.499" v2="0.733375" v1="0.235375"/>
+		<Element name="tab_obsidian.tex" u1="0.501" u2="0.999" v2="0.733375" v1="0.235375"/>
+	</Elements>
+</Atlas>

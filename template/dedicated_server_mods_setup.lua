@@ -2,6 +2,18 @@
 --ServerModSetup("350811795")
 --记得加入对应的modoverrides.lua配置信息到./Master和./Caves里
 
+-- [[API] Gem Core](https://steamcommunity.com/sharedfiles/filedetails/?id=1378549454)
+ServerModSetup("1378549454")
+
+-- [Island Adventures - Assets](https://steamcommunity.com/sharedfiles/filedetails/?id=1467200656)
+ServerModSetup("1467200656")
+
+-- [Island Adventures](https://steamcommunity.com/sharedfiles/filedetails/?id=1467214795)
+ServerModSetup("1467214795")
+
+-- [Island Adventures - Essential Islands Addon](https://steamcommunity.com/sharedfiles/filedetails/?id=1780226102)
+ServerModSetup("1780226102")
+
 -- [Wormhole Marks [DST]](https://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
 ServerModSetup("362175979")
 

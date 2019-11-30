@@ -64,33 +64,37 @@ docker-compose up
 
 ### Server
 
-* [Wormhole Marks [DST]](https://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
-* [Increased Stack size](https://steamcommunity.com/sharedfiles/filedetails/?id=374550642)
-* [Extra Equip Slots](https://steamcommunity.com/sharedfiles/filedetails/?id=375850593)
-* [Health Info](https://steamcommunity.com/sharedfiles/filedetails/?id=375859599)
-* [Global Positions](https://steamcommunity.com/sharedfiles/filedetails/?id=378160973)
-* [Mineable Gems](https://steamcommunity.com/sharedfiles/filedetails/?id=380423963)
-* [Restart](https://steamcommunity.com/sharedfiles/filedetails/?id=462434129)
-* [Fix Multiplayer](https://steamcommunity.com/sharedfiles/filedetails/?id=463718554)
-* [No Thermal Stone Durability](https://steamcommunity.com/sharedfiles/filedetails/?id=466732225)
-* [Quick Pick](https://steamcommunity.com/sharedfiles/filedetails/?id=501385076)
-* [Don't Drop Everything](https://steamcommunity.com/sharedfiles/filedetails/?id=661253977)
-* [Show Me (Origin)](https://steamcommunity.com/sharedfiles/filedetails/?id=666155465)
-* [Trap Reset](https://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
+- [[API] Gem Core](https://steamcommunity.com/sharedfiles/filedetails/?id=1378549454)
+- [Island Adventures - Assets](https://steamcommunity.com/sharedfiles/filedetails/?id=1467200656)
+- [Island Adventures](https://steamcommunity.com/sharedfiles/filedetails/?id=1467214795)
+- [Island Adventures - Essential Islands Addon](https://steamcommunity.com/sharedfiles/filedetails/?id=1780226102)
+- [Wormhole Marks [DST]](https://steamcommunity.com/sharedfiles/filedetails/?id=362175979)
+- [Increased Stack size](https://steamcommunity.com/sharedfiles/filedetails/?id=374550642)
+- [Extra Equip Slots](https://steamcommunity.com/sharedfiles/filedetails/?id=375850593)
+- [Health Info](https://steamcommunity.com/sharedfiles/filedetails/?id=375859599)
+- [Global Positions](https://steamcommunity.com/sharedfiles/filedetails/?id=378160973)
+- [Mineable Gems](https://steamcommunity.com/sharedfiles/filedetails/?id=380423963)
+- [Restart](https://steamcommunity.com/sharedfiles/filedetails/?id=462434129)
+- [Fix Multiplayer](https://steamcommunity.com/sharedfiles/filedetails/?id=463718554)
+- [No Thermal Stone Durability](https://steamcommunity.com/sharedfiles/filedetails/?id=466732225)
+- [Quick Pick](https://steamcommunity.com/sharedfiles/filedetails/?id=501385076)
+- [Don't Drop Everything](https://steamcommunity.com/sharedfiles/filedetails/?id=661253977)
+- [Show Me (Origin)](https://steamcommunity.com/sharedfiles/filedetails/?id=666155465)
+- [Trap Reset](https://steamcommunity.com/sharedfiles/filedetails/?id=679636739)
 
 ### Client (recommended)
 
-* [Minimap HUD](http://steamcommunity.com/sharedfiles/filedetails/?id=345692228)
-* [Geometric Placement](http://steamcommunity.com/sharedfiles/filedetails/?id=351325790)
-* [Combined Status](http://steamcommunity.com/sharedfiles/filedetails/?id=376333686)
-* [Auto Actions - Full client mod](http://steamcommunity.com/sharedfiles/filedetails/?id=651419070)
-* [Craft Pot](https://steamcommunity.com/sharedfiles/filedetails/?id=727774324)
+- [Minimap HUD](http://steamcommunity.com/sharedfiles/filedetails/?id=345692228)
+- [Geometric Placement](http://steamcommunity.com/sharedfiles/filedetails/?id=351325790)
+- [Combined Status](http://steamcommunity.com/sharedfiles/filedetails/?id=376333686)
+- [Auto Actions - Full client mod](http://steamcommunity.com/sharedfiles/filedetails/?id=651419070)
+- [Craft Pot](https://steamcommunity.com/sharedfiles/filedetails/?id=727774324)
 
 ## 问题
 - [ ] DST服务器自动安装更新mod
 
 ## Path[Mac]
 
-* Server Config: `/Users/makara/Documents/Klei/DoNotStarveTogether/`
-* Mods: `/Users/makara/Library/Application Support/Steam/steamapps/common/Don't Starve Together/dontstarve_steam.app/Contents/mods`
+- Server Config: `/Users/makara/Documents/Klei/DoNotStarveTogether/`
+- Mods: `/Users/makara/Library/Application Support/Steam/steamapps/common/Don't Starve Together/dontstarve_steam.app/Contents/mods`
 

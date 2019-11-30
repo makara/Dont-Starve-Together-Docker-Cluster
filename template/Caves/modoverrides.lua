@@ -1,4 +1,47 @@
 return {
+  ["workshop-1378549454"]={
+    configuration_options={
+      MemSpikeFixmaster_override=true
+    },
+    enabled=true
+  },
+  ["workshop-1467200656"]={ configuration_options={  }, enabled=true },
+  ["workshop-1467214795"]={
+    configuration_options={
+      allowprimeapebarrel=true,
+      autodisembark=false,
+      bossbalance=true,
+      devmode=false,
+      droplootground=true,
+      dynamicmusic=true,
+      limestonerepair=true,
+      locale=false,
+      newplayerboats=false,
+      oldwarly=false,
+      scale_floodpuddles=0.4,
+      tuningmodifiers=true
+    },
+    enabled=true
+  },
+  ["workshop-1780226102"]={
+    configuration_options={
+      AltEndtable=true,
+      AltFloralshirt=false,
+      AltHoundius=false,
+      AltSeawreath=false,
+      Contents=false,
+      Glommer=0,
+      Islands=false,
+      Walrus=0,
+      beequeen=true,
+      dragonfly=1,
+      moon1=false,
+      oasis=true,
+      sinkhole=true,
+      volcano=false
+    },
+    enabled=true
+  },
   ["workshop-362175979"]={ configuration_options={ ["Draw over FoW"]="enabled" }, enabled=true },
   ["workshop-374550642"]={ configuration_options={ MAXSTACKSIZE=99 }, enabled=true },
   ["workshop-375850593"]={ configuration_options={  }, enabled=true },
@@ -28,7 +71,6 @@ return {
   },
   ["workshop-380423963"]={
     configuration_options={
-      [""]=0,
       boulder_blue=0.2,
       boulder_purple=0.05,
       change_cave_loot=false,
