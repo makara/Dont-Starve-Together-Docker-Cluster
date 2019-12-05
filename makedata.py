@@ -6,7 +6,7 @@ import re
 
 service_format = '''
  {name}:
-    image: makarawang/dont-starve-together-docker-cluster
+    image: "makarawang/dont-starve-together-docker-cluster:shipwrecked"
     ports:
       - "10999:10999/udp"
       - "10998:10998/udp"
